@@ -56,11 +56,13 @@ static void lvgl_touch_cb(lv_indev_t *indev, lv_indev_data_t *data)
 
 static void lvgl_tick_cb(void *arg)
 {
+    (void)arg;
     lv_tick_inc(LVGL_TICK_PERIOD_MS);
 }
 
 static void lvgl_task(void *arg)
 {
+    (void)arg;
     ESP_LOGI(TAG, "LVGL task started");
     uint32_t delay_ms = 0;
     while (1) {
@@ -108,7 +110,8 @@ void app_main(void)
     lv_indev_set_user_data(indev, hw.touch);
     lv_indev_set_read_cb(indev, lvgl_touch_cb);
 
-    xTaskCreate(lvgl_task, "LVGL", LVGL_TASK_STACK_SIZE, NULL, LVGL_TASK_PRIORITY, NULL);
+    BaseType_t ret = xTaskCreate(lvgl_task, "LVGL", LVGL_TASK_STACK_SIZE, NULL, LVGL_TASK_PRIORITY, NULL);
+    assert(ret == pdPASS);
 
     _lock_acquire(&lvgl_api_lock);
     ui_main_init(disp, hw.panel);
