@@ -45,9 +45,11 @@ examples/peripherals/lcd/tft_touch_s3/
         ├── ui_main.c                   # 顶层 UI：tabview 框架 + 页面注册
         ├── ui_main.h
         ├── ui_page_home.c              # 第一页：欢迎页 / 运行时信息
+        ├── ui_page_home.h
         ├── ui_page_ai.c                # 第二页：AI 结果占位页
         ├── ui_page_ai.h                # 暴露 ui_ai_update_result() 接口
-        └── ui_page_settings.c          # 第三页：屏幕旋转 + 背光亮度控制
+        ├── ui_page_settings.c          # 第三页：屏幕旋转 + 背光亮度控制
+        └── ui_page_settings.h
 ```
 
 ---
@@ -100,9 +102,9 @@ dependencies:
 | 入口 | `main.c` | 调用 `lcd_touch_init()`，启动 LVGL task，调用 `ui_main_init()` |
 | 硬件抽象 | `lcd_touch.c/h` | 初始化 SPI 总线、ST7789 panel、XPT2046 touch，返回 handle |
 | UI 框架 | `ui_main.c/h` | 创建 `lv_tabview`，注册三个页面，管理旋转回调 |
-| 主页 | `ui_page_home.c` | 显示芯片名称、运行时间（lv_label，1s 刷新） |
-| AI 页 | `ui_page_ai.c/h` | 占位卡片（lv_label + lv_bar），暴露 `ui_ai_update_result()` |
-| 设置页 | `ui_page_settings.c` | 旋转按钮（循环 0/90/180/270°）、背光亮度滑块 |
+| 主页 | `ui_page_home.c/h` | 显示芯片名称、运行时间（lv_label，1s 刷新）；暴露 `ui_page_home_init(lv_obj_t *parent)` |
+| AI 页 | `ui_page_ai.c/h` | 占位卡片（lv_label + lv_bar），暴露 `ui_page_ai_init(lv_obj_t *parent)` 和 `ui_ai_update_result(const char*, float)` |
+| 设置页 | `ui_page_settings.c/h` | 旋转按钮（循环 0/90/180/270°）、背光亮度滑块；暴露 `ui_page_settings_init(lv_obj_t *parent)` |
 
 ### UI 布局
 
@@ -128,12 +130,12 @@ dependencies:
 void ui_ai_update_result(const char *label, float confidence);
 ```
 
-调用方需持有 `lvgl_api_lock` 后再调用此函数（与其他 LVGL API 保持一致）。
+**线程安全约定：** `lvgl_api_lock` 声明为非 static 全局变量，定义在 `lcd_touch.c`，在 `lcd_touch.h` 中以 `extern _lock_t lvgl_api_lock;` 暴露。任何需要调用 LVGL API 的外部模块（包括 AI 推理任务）均通过此头文件获取锁。调用方须先 `_lock_acquire(&lvgl_api_lock)`，调用完成后 `_lock_release(&lvgl_api_lock)`。
 
 ### 线程安全
 
-- LVGL 运行在独立 FreeRTOS task（优先级 2，栈 4 KB）
-- 所有 LVGL API 调用通过 `_lock_t lvgl_api_lock` 保护
+- LVGL 运行在独立 FreeRTOS task（优先级 2，栈 **6 KB**，初始值需在验收测试中通过 `uxTaskGetHighWaterMark()` 调优）
+- 所有 LVGL API 调用通过 `_lock_t lvgl_api_lock` 保护（定义在 `lcd_touch.c`，声明见 `lcd_touch.h`）
 - `esp_timer` 提供 2ms tick（`lv_tick_inc`）
 - LVGL draw buffer：2 个，各 `240 × 20 × 2 = 9.6 KB`，使用 `spi_bus_dma_memory_alloc` 分配
 
@@ -143,16 +145,20 @@ void ui_ai_update_result(const char *label, float confidence);
 
 `sdkconfig.defaults.esp32s3`：
 ```
-CONFIG_IDF_TARGET="esp32s3"
 CONFIG_SPIRAM=y
 CONFIG_SPIRAM_MODE_OCT=y
+CONFIG_SPIRAM_SPEED_80M=y
 ```
 
 `sdkconfig.defaults`：
 ```
-CONFIG_LV_COLOR_DEPTH_16=y
+CONFIG_LV_CONF_SKIP=y
 CONFIG_FREERTOS_HZ=1000
 ```
+
+注：LVGL 9.x 中色深通过 `lv_display_set_color_format()` 在运行时设置，无需 Kconfig 符号。
+
+注：`CONFIG_IDF_TARGET` 不写入 sdkconfig.defaults，由 `idf.py set-target esp32s3` 设置，与所有其他 LCD 示例保持一致。版本依赖采用精确锁定（无 `^`），确保 lab 环境的可重现性。
 
 ---
 
@@ -170,7 +176,7 @@ CONFIG_FREERTOS_HZ=1000
 
 ## 验收标准
 
-1. `idf.py set-target esp32s3 && idf.py build` 编译通过，无 warning
+1. `idf.py set-target esp32s3 && idf.py build` 编译通过，`main/` 目录下项目自有源文件无新增 warning（第三方组件头文件产生的 warning 不计入）
 2. Flash 到 ESP32-S3 后，屏幕点亮，显示 tabview 三页面
 3. 触摸标签栏可切换页面，触摸设置页旋转按钮可旋转屏幕
 4. 调用 `ui_ai_update_result("test", 0.95f)` 后 AI 页面内容更新
