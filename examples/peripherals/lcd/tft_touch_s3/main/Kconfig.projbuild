@@ -1,0 +1,45 @@
+menu "TFT Touch S3 Example Configuration"
+
+    config EXAMPLE_LCD_PIXEL_CLOCK_HZ
+        int "LCD SPI pixel clock (Hz)"
+        default 20000000
+        help
+            SPI clock frequency for ST7789. 20 MHz is safe for most modules.
+
+    config EXAMPLE_PIN_NUM_SCLK
+        int "SPI SCLK GPIO"
+        default 18
+
+    config EXAMPLE_PIN_NUM_MOSI
+        int "SPI MOSI GPIO"
+        default 19
+
+    config EXAMPLE_PIN_NUM_MISO
+        int "SPI MISO GPIO"
+        default 21
+        help
+            Required by XPT2046 to return touch coordinates.
+
+    config EXAMPLE_PIN_NUM_LCD_DC
+        int "LCD DC GPIO"
+        default 5
+
+    config EXAMPLE_PIN_NUM_LCD_RST
+        int "LCD RST GPIO"
+        default 3
+
+    config EXAMPLE_PIN_NUM_LCD_CS
+        int "LCD CS GPIO"
+        default 4
+
+    config EXAMPLE_PIN_NUM_BK_LIGHT
+        int "LCD Backlight GPIO"
+        default 2
+        help
+            Active-low backlight control.
+
+    config EXAMPLE_PIN_NUM_TOUCH_CS
+        int "Touch CS GPIO"
+        default 15
+
+endmenu
