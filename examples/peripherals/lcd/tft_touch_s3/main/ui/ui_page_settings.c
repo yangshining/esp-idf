@@ -5,7 +5,7 @@
 #include "driver/gpio.h"
 #include "lvgl.h"
 #include "ui_page_settings.h"
-#include "lcd_touch.h"   /* for CONFIG_EXAMPLE_PIN_NUM_BK_LIGHT */
+#include "lcd_touch.h"   /* for lvgl_api_lock */
 
 static lv_display_rotation_t s_rotation = LV_DISPLAY_ROTATION_0;
 
