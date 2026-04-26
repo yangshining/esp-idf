@@ -125,6 +125,10 @@ The current defaults are:
 | `EXAMPLE_PIN_NUM_TOUCH_CS` | `15` |
 | `EXAMPLE_PIN_NUM_BK_LIGHT` | `2` |
 | `EXAMPLE_BK_LIGHT_ON_LEVEL` | `1` |
+| `EXAMPLE_TOUCH_SWAP_XY` | `n` |
+| `EXAMPLE_TOUCH_MIRROR_X` | `y` |
+| `EXAMPLE_TOUCH_MIRROR_Y` | `n` |
+| `EXAMPLE_TOUCH_LOG` | `n` |
 | `EXAMPLE_LCD_PIXEL_CLOCK_HZ` | `20000000` |
 
 `sdkconfig.defaults.esp32s3` enables octal PSRAM at 80 MHz:
@@ -156,6 +160,7 @@ _lock_release(&lvgl_api_lock);
 - Blank white screen: the module may use ILI9341 instead of ST7789, or the SPI pins may be wrong.
 - Screen is black: check `LED -> GPIO2` backlight wiring. If the module uses active-low backlight, set `EXAMPLE_BK_LIGHT_ON_LEVEL` to `0` in `idf.py menuconfig`.
 - No touch response: check `T_DO -> GPIO21`, `T_DIN -> GPIO17`, `T_CLK -> GPIO18`, and `T_CS -> GPIO15`.
+- Enable `EXAMPLE_TOUCH_LOG` in `idf.py menuconfig` to print `touch: x=... y=... z=...` while calibrating. Keep it disabled for smoother touch response.
 - Touch is mirrored or offset: adjust `.swap_xy`, `.mirror_x`, and `.mirror_y` in `main/lcd_touch.c`.
 - Build fails because PSRAM is not found: adjust `sdkconfig.defaults.esp32s3` for your board.
 - Do not connect the TF card `SD_*` pins unless SD card support is added to the example.

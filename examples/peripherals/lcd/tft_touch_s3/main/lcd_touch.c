@@ -25,6 +25,24 @@ static const char *TAG = "lcd_touch";
 #define LCD_BK_LIGHT_ON     CONFIG_EXAMPLE_BK_LIGHT_ON_LEVEL
 #define LCD_BK_LIGHT_OFF    (1 - CONFIG_EXAMPLE_BK_LIGHT_ON_LEVEL)
 
+#ifdef CONFIG_EXAMPLE_TOUCH_SWAP_XY
+#define EXAMPLE_TOUCH_SWAP_XY 1
+#else
+#define EXAMPLE_TOUCH_SWAP_XY 0
+#endif
+
+#ifdef CONFIG_EXAMPLE_TOUCH_MIRROR_X
+#define EXAMPLE_TOUCH_MIRROR_X 1
+#else
+#define EXAMPLE_TOUCH_MIRROR_X 0
+#endif
+
+#ifdef CONFIG_EXAMPLE_TOUCH_MIRROR_Y
+#define EXAMPLE_TOUCH_MIRROR_Y 1
+#else
+#define EXAMPLE_TOUCH_MIRROR_Y 0
+#endif
+
 _lock_t lvgl_api_lock;
 
 void lcd_touch_init(lcd_touch_handles_t *out)
@@ -84,7 +102,11 @@ void lcd_touch_init(lcd_touch_handles_t *out)
         .y_max = LCD_V_RES,
         .rst_gpio_num = -1,
         .int_gpio_num = -1,
-        .flags = { .swap_xy = 0, .mirror_x = 0, .mirror_y = 1 },
+        .flags = {
+            .swap_xy = EXAMPLE_TOUCH_SWAP_XY,
+            .mirror_x = EXAMPLE_TOUCH_MIRROR_X,
+            .mirror_y = EXAMPLE_TOUCH_MIRROR_Y,
+        },
     };
     ESP_LOGI(TAG, "Init XPT2046 touch");
     ESP_ERROR_CHECK(esp_lcd_touch_new_spi_xpt2046(tp_io, &tp_cfg, &out->touch));

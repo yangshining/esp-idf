@@ -42,9 +42,9 @@ void ui_main_init(lv_display_t *disp, void *panel)
     lv_obj_t *tv = lv_tabview_create(scr);
     lv_tabview_set_tab_bar_size(tv, 40);
 
-    lv_obj_t *tab_home     = lv_tabview_add_tab(tv, LV_SYMBOL_HOME " 主页");
-    lv_obj_t *tab_ai       = lv_tabview_add_tab(tv, LV_SYMBOL_IMAGE " AI");
-    lv_obj_t *tab_settings = lv_tabview_add_tab(tv, LV_SYMBOL_SETTINGS " 设置");
+    lv_obj_t *tab_home = lv_tabview_add_tab(tv, LV_SYMBOL_HOME " Home");
+    lv_obj_t *tab_ai = lv_tabview_add_tab(tv, LV_SYMBOL_IMAGE " AI");
+    lv_obj_t *tab_settings = lv_tabview_add_tab(tv, LV_SYMBOL_SETTINGS " Setup");
 
     ui_page_home_init(tab_home);
     ui_page_ai_init(tab_ai);

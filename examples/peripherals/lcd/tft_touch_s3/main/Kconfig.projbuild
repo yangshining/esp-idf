@@ -50,4 +50,22 @@ menu "TFT Touch S3 Example Configuration"
         int "Touch CS GPIO"
         default 15
 
+    config EXAMPLE_TOUCH_SWAP_XY
+        bool "Swap touch X/Y coordinates"
+        default n
+
+    config EXAMPLE_TOUCH_MIRROR_X
+        bool "Mirror touch X coordinate"
+        default y
+
+    config EXAMPLE_TOUCH_MIRROR_Y
+        bool "Mirror touch Y coordinate"
+        default n
+
+    config EXAMPLE_TOUCH_LOG
+        bool "Log touch coordinates"
+        default n
+        help
+            Print touch coordinates to the serial monitor. Enable this only while calibrating touch input.
+
 endmenu

@@ -13,8 +13,9 @@ static lv_obj_t *s_uptime_label;
 
 static void uptime_timer_cb(lv_timer_t *t)
 {
+    (void)t;
     uint32_t seconds = (uint32_t)(esp_timer_get_time() / 1000000ULL);
-    lv_label_set_text_fmt(s_uptime_label, LV_SYMBOL_REFRESH " 运行时间: %"PRIu32" 秒", seconds);
+    lv_label_set_text_fmt(s_uptime_label, LV_SYMBOL_REFRESH " Uptime: %"PRIu32" s", seconds);
 }
 
 void ui_page_home_init(lv_obj_t *parent)
@@ -25,7 +26,7 @@ void ui_page_home_init(lv_obj_t *parent)
     lv_obj_align(chip_label, LV_ALIGN_TOP_MID, 0, 20);
 
     s_uptime_label = lv_label_create(parent);
-    lv_label_set_text_static(s_uptime_label, LV_SYMBOL_REFRESH " 运行时间: 0 秒");
+    lv_label_set_text_static(s_uptime_label, LV_SYMBOL_REFRESH " Uptime: 0 s");
     lv_obj_align(s_uptime_label, LV_ALIGN_CENTER, 0, 20);
 
     lv_timer_create(uptime_timer_cb, 1000, NULL);
