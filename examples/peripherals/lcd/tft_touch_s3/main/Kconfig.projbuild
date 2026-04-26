@@ -12,7 +12,7 @@ menu "TFT Touch S3 Example Configuration"
 
     config EXAMPLE_PIN_NUM_MOSI
         int "SPI MOSI GPIO"
-        default 19
+        default 17
 
     config EXAMPLE_PIN_NUM_MISO
         int "SPI MISO GPIO"
@@ -36,7 +36,15 @@ menu "TFT Touch S3 Example Configuration"
         int "LCD Backlight GPIO"
         default 2
         help
-            Active-low backlight control.
+            Backlight control pin connected to the TFT module LED pin.
+
+    config EXAMPLE_BK_LIGHT_ON_LEVEL
+        int "LCD backlight on level"
+        range 0 1
+        default 1
+        help
+            GPIO level that turns the TFT backlight on. Most 2.4-inch SPI TFT modules use active-high LED backlight.
+            Set this to 0 if your module uses active-low backlight.
 
     config EXAMPLE_PIN_NUM_TOUCH_CS
         int "Touch CS GPIO"

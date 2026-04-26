@@ -22,8 +22,8 @@ static const char *TAG = "lcd_touch";
 #define LCD_V_RES           320
 #define LCD_CMD_BITS        8
 #define LCD_PARAM_BITS      8
-#define LCD_BK_LIGHT_ON     0
-#define LCD_BK_LIGHT_OFF    1
+#define LCD_BK_LIGHT_ON     CONFIG_EXAMPLE_BK_LIGHT_ON_LEVEL
+#define LCD_BK_LIGHT_OFF    (1 - CONFIG_EXAMPLE_BK_LIGHT_ON_LEVEL)
 
 _lock_t lvgl_api_lock;
 
