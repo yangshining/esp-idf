@@ -5,6 +5,8 @@
 
 This example drives a 2.4-inch SPI TFT module marked `TFT SPI 240*320`, with an SPI resistive touch controller. The display path uses the ESP-IDF `esp_lcd` ST7789 driver and the touch path uses the XPT2046 component.
 
+The default configuration has been verified on an ESP32-S3 N16R8 development board with a 2.4-inch 240x320 SPI TFT module. The verified setup uses active-high backlight control, XPT2046 polling mode, mirrored X touch coordinates, and non-mirrored Y touch coordinates.
+
 The demo renders a three-page LVGL v9 UI:
 
 - Home: chip name and uptime
@@ -27,6 +29,14 @@ SD_CS, SD_MOSI, SD_MISO, SD_SCK
 ```
 
 The `SD_*` pins are for the TF card slot. This example does not use the TF card, so leave them unconnected.
+
+## Verified Behavior
+
+- The TFT backlight is driven by `GPIO2` and is active high by default.
+- The UI uses English labels so it works with the built-in Montserrat font and does not need a CJK font.
+- LVGL's performance overlay is disabled by default.
+- XPT2046 touch input is tuned for responsiveness with one sample per read and a pressure threshold of `50`.
+- Touch calibration defaults are `swap_xy = n`, `mirror_x = y`, and `mirror_y = n`.
 
 ## Recommended Wiring
 
@@ -79,6 +89,15 @@ idf.py set-target esp32s3
 idf.py build
 ```
 
+For day-to-day UI/code changes, use incremental builds:
+
+```powershell
+idf.py build
+idf.py -p COMx app-flash monitor
+```
+
+Use `idf.py fullclean` only after target changes, major Kconfig changes, managed component problems, or a corrupted build directory.
+
 The build output is written under:
 
 ```text
@@ -130,6 +149,8 @@ The current defaults are:
 | `EXAMPLE_TOUCH_MIRROR_Y` | `n` |
 | `EXAMPLE_TOUCH_LOG` | `n` |
 | `EXAMPLE_LCD_PIXEL_CLOCK_HZ` | `20000000` |
+| `XPT2046_Z_THRESHOLD` | `50` |
+| `ESP_LCD_TOUCH_MAX_POINTS` | `1` |
 
 `sdkconfig.defaults.esp32s3` enables octal PSRAM at 80 MHz:
 
@@ -161,6 +182,7 @@ _lock_release(&lvgl_api_lock);
 - Screen is black: check `LED -> GPIO2` backlight wiring. If the module uses active-low backlight, set `EXAMPLE_BK_LIGHT_ON_LEVEL` to `0` in `idf.py menuconfig`.
 - No touch response: check `T_DO -> GPIO21`, `T_DIN -> GPIO17`, `T_CLK -> GPIO18`, and `T_CS -> GPIO15`.
 - Enable `EXAMPLE_TOUCH_LOG` in `idf.py menuconfig` to print `touch: x=... y=... z=...` while calibrating. Keep it disabled for smoother touch response.
-- Touch is mirrored or offset: adjust `.swap_xy`, `.mirror_x`, and `.mirror_y` in `main/lcd_touch.c`.
+- Touch is mirrored or offset: adjust `EXAMPLE_TOUCH_SWAP_XY`, `EXAMPLE_TOUCH_MIRROR_X`, and `EXAMPLE_TOUCH_MIRROR_Y` in `idf.py menuconfig`.
+- Touch is sluggish: keep `EXAMPLE_TOUCH_LOG` disabled, keep `ESP_LCD_TOUCH_MAX_POINTS=1`, and lower `XPT2046_Z_THRESHOLD` carefully if light touches are missed.
 - Build fails because PSRAM is not found: adjust `sdkconfig.defaults.esp32s3` for your board.
 - Do not connect the TF card `SD_*` pins unless SD card support is added to the example.
