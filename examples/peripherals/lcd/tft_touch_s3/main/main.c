@@ -13,6 +13,9 @@
 #include "lvgl.h"
 #include "lcd_touch.h"
 #include "ui_main.h"
+#include "nvs_flash.h"
+#include "sys_stats.h"
+#include "settings_store.h"
 
 static const char *TAG = "main";
 #ifdef CONFIG_EXAMPLE_TOUCH_LOG
@@ -88,6 +91,17 @@ static void lvgl_task(void *arg)
 
 void app_main(void)
 {
+    /* NVS must be initialised before settings_store */
+    esp_err_t nvs_ret = nvs_flash_init();
+    if (nvs_ret == ESP_ERR_NVS_NO_FREE_PAGES || nvs_ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+        ESP_ERROR_CHECK(nvs_flash_erase());
+        nvs_ret = nvs_flash_init();
+    }
+    ESP_ERROR_CHECK(nvs_ret);
+
+    settings_store_init();
+    sys_stats_init();
+
     lcd_touch_handles_t hw = {};
     lcd_touch_init(&hw);
 
