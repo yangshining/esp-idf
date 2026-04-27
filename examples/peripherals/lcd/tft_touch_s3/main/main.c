@@ -55,12 +55,12 @@ static void lvgl_touch_cb(lv_indev_t *indev, lv_indev_data_t *data)
 #ifdef CONFIG_EXAMPLE_TOUCH_LOG
         int64_t now_us = esp_timer_get_time();
         if (now_us - s_last_touch_log_us > 200000) {
-            ESP_LOGI(TAG, "touch: x=%u y=%u z=%u", point.coords[0].x, point.coords[0].y, point.coords[0].strength);
+            ESP_LOGI(TAG, "touch: x=%u y=%u z=%u", point.x, point.y, point.strength);
             s_last_touch_log_us = now_us;
         }
 #endif
-        data->point.x = point.coords[0].x;
-        data->point.y = point.coords[0].y;
+        data->point.x = point.x;
+        data->point.y = point.y;
         data->state = LV_INDEV_STATE_PRESSED;
     } else {
         data->state = LV_INDEV_STATE_RELEASED;
