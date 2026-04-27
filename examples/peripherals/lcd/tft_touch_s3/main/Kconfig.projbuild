@@ -68,4 +68,23 @@ menu "TFT Touch S3 Example Configuration"
         help
             Print touch coordinates to the serial monitor. Enable this only while calibrating touch input.
 
+    config EXAMPLE_PROV_SERVICE_NAME
+        string "BLE provisioning service name prefix"
+        default "edge-ai-lab"
+        help
+            BLE device name prefix used during WiFi provisioning. The last 3 bytes of the STA MAC are appended.
+
+    config EXAMPLE_PROV_POP
+        string "BLE provisioning proof-of-possession"
+        default "abcd1234"
+        help
+            Proof-of-possession used by the Espressif provisioning app for the security 1 handshake.
+
+    config EXAMPLE_WIFI_MAX_RETRY
+        int "WiFi connection retry count"
+        range 1 20
+        default 5
+        help
+            Number of WiFi reconnect attempts before the UI reports a connection failure.
+
 endmenu

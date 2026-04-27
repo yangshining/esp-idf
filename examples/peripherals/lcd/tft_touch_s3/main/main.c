@@ -16,6 +16,9 @@
 #include "nvs_flash.h"
 #include "sys_stats.h"
 #include "settings_store.h"
+#include "app_net_state.h"
+#include "app_wifi.h"
+#include "app_prov.h"
 
 static const char *TAG = "main";
 #ifdef CONFIG_EXAMPLE_TOUCH_LOG
@@ -100,6 +103,9 @@ void app_main(void)
 
     settings_store_init();
     sys_stats_init();
+    app_net_state_init();
+    ESP_ERROR_CHECK(app_wifi_init());
+    ESP_ERROR_CHECK(app_prov_init());
 
     lcd_touch_handles_t hw = {};
     lcd_touch_init(&hw);

@@ -7,10 +7,11 @@ This example drives a 2.4-inch SPI TFT module marked `TFT SPI 240*320`, with an 
 
 The default configuration has been verified on an ESP32-S3 N16R8 development board with a 2.4-inch 240x320 SPI TFT module. The verified setup uses active-high backlight control, XPT2046 polling mode, mirrored X touch coordinates, and non-mirrored Y touch coordinates.
 
-The demo renders a three-page LVGL v9 UI:
+The demo renders a four-page LVGL v9 UI:
 
 - **Home:** real-time heap free (KB) and CPU load (%) rolling charts, plus uptime counter
 - **AI:** result label, confidence bar, and a **Run Inference** button that simulates a classification result after 1.5 s; the `ui_ai_update_result()` API is the hook for real inference tasks
+- **Network:** BLE WiFi provisioning and WiFi STA status, including SSID, IP address, RSSI, and last error
 - **Settings:** screen rotation (4 orientations) and backlight brightness slider (PWM, 0–100%), both persisted to NVS and restored on reboot
 
 ## Hardware
@@ -98,6 +99,7 @@ idf.py -p COMx app-flash monitor
 ```
 
 Use `idf.py fullclean` only after target changes, major Kconfig changes, managed component problems, or a corrupted build directory.
+After pulling the BLE provisioning changes, run `idf.py set-target esp32s3` or `idf.py reconfigure` once so the Bluetooth and custom partition defaults are applied to the local `sdkconfig`.
 
 The build output is written under:
 
@@ -149,6 +151,9 @@ The current defaults are:
 | `EXAMPLE_TOUCH_MIRROR_X` | `y` |
 | `EXAMPLE_TOUCH_MIRROR_Y` | `n` |
 | `EXAMPLE_TOUCH_LOG` | `n` |
+| `EXAMPLE_PROV_SERVICE_NAME` | `edge-ai-lab` |
+| `EXAMPLE_PROV_POP` | `abcd1234` |
+| `EXAMPLE_WIFI_MAX_RETRY` | `5` |
 | `EXAMPLE_LCD_PIXEL_CLOCK_HZ` | `20000000` |
 | `XPT2046_Z_THRESHOLD` | `50` |
 | `ESP_LCD_TOUCH_MAX_POINTS` | `1` |
@@ -162,9 +167,22 @@ CONFIG_SPIRAM_SPEED_80M=y
 CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
 CONFIG_FREERTOS_GENERATE_RUN_TIME_STATS=y
 CONFIG_FREERTOS_RUN_TIME_STATS_USING_ESP_TIMER=y
+CONFIG_BT_ENABLED=y
+CONFIG_BT_NIMBLE_ENABLED=y
+CONFIG_ESP_PROTOCOMM_SUPPORT_SECURITY_VERSION_1=y
 ```
 
-This matches ESP32-S3 N16R8 boards with 8 MB PSRAM. If your board has no compatible PSRAM, remove or override the `CONFIG_SPIRAM*` lines. The `FREERTOS_*` lines are required for the Home page CPU load chart and are safe to keep regardless of PSRAM.
+This matches ESP32-S3 N16R8 boards with 8 MB PSRAM. If your board has no compatible PSRAM, remove or override the `CONFIG_SPIRAM*` lines. The `FREERTOS_*` lines are required for the Home page CPU load chart and are safe to keep regardless of PSRAM. The Bluetooth lines enable the BLE transport used by WiFi provisioning.
+
+## BLE WiFi Provisioning
+
+On first boot, or after clearing WiFi credentials from the Network page, the device starts BLE provisioning using the `network_provisioning` managed component. Use Espressif's provisioning app or tooling with:
+
+- Transport: BLE
+- Service name: `edge-ai-lab-XXXXXX`, where `XXXXXX` is derived from the STA MAC address
+- Proof-of-possession: `abcd1234` by default
+
+After provisioning succeeds, the device connects as a WiFi station and the Network page shows the connected SSID, IPv4 address, and RSSI. The **Clear WiFi** button erases stored WiFi credentials and restarts the board so it enters provisioning again.
 
 ## Integrating AI Results
 
