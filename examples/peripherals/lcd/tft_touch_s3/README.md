@@ -9,9 +9,9 @@ The default configuration has been verified on an ESP32-S3 N16R8 development boa
 
 The demo renders a three-page LVGL v9 UI:
 
-- Home: chip name and uptime
-- AI: result label and confidence bar, updated through `ui_ai_update_result()`
-- Settings: screen rotation and backlight on/off slider
+- **Home:** real-time heap free (KB) and CPU load (%) rolling charts, plus uptime counter
+- **AI:** result label, confidence bar, and a **Run Inference** button that simulates a classification result after 1.5 s; the `ui_ai_update_result()` API is the hook for real inference tasks
+- **Settings:** screen rotation (4 orientations) and backlight brightness slider (PWM, 0–100%), both persisted to NVS and restored on reboot
 
 ## Hardware
 
@@ -32,11 +32,12 @@ The `SD_*` pins are for the TF card slot. This example does not use the TF card,
 
 ## Verified Behavior
 
-- The TFT backlight is driven by `GPIO2` and is active high by default.
+- The TFT backlight is driven by `GPIO2` via **LEDC PWM** (5 kHz, 13-bit) and is active high by default. Call `lcd_touch_set_brightness(pct)` to change brightness programmatically.
 - The UI uses English labels so it works with the built-in Montserrat font and does not need a CJK font.
 - LVGL's performance overlay is disabled by default.
 - XPT2046 touch input is tuned for responsiveness with one sample per read and a pressure threshold of `50`.
 - Touch calibration defaults are `swap_xy = n`, `mirror_x = y`, and `mirror_y = n`.
+- Brightness and rotation settings are saved to NVS partition `"tft_settings"` and restored on every boot.
 
 ## Recommended Wiring
 
@@ -152,20 +153,22 @@ The current defaults are:
 | `XPT2046_Z_THRESHOLD` | `50` |
 | `ESP_LCD_TOUCH_MAX_POINTS` | `1` |
 
-`sdkconfig.defaults.esp32s3` enables octal PSRAM at 80 MHz:
+`sdkconfig.defaults.esp32s3` enables octal PSRAM at 80 MHz and FreeRTOS runtime stats:
 
 ```text
 CONFIG_SPIRAM=y
 CONFIG_SPIRAM_MODE_OCT=y
 CONFIG_SPIRAM_SPEED_80M=y
 CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
+CONFIG_FREERTOS_GENERATE_RUN_TIME_STATS=y
+CONFIG_FREERTOS_RUN_TIME_STATS_USING_ESP_TIMER=y
 ```
 
-This matches ESP32-S3 N16R8 boards with 8 MB PSRAM. If your board has no compatible PSRAM, remove or override those settings.
+This matches ESP32-S3 N16R8 boards with 8 MB PSRAM. If your board has no compatible PSRAM, remove or override the `CONFIG_SPIRAM*` lines. The `FREERTOS_*` lines are required for the Home page CPU load chart and are safe to keep regardless of PSRAM.
 
 ## Integrating AI Results
 
-Any FreeRTOS task can push inference results to the AI page. LVGL APIs must be called while holding `lvgl_api_lock`:
+The AI page has a built-in **Run Inference** button that simulates classification results for demo purposes (random label + confidence 60–99%, 1.5 s delay). To replace it with real inference from a FreeRTOS task, call `ui_ai_update_result()` while holding `lvgl_api_lock`:
 
 ```c
 #include "ui_page_ai.h"
@@ -175,6 +178,8 @@ _lock_acquire(&lvgl_api_lock);
 ui_ai_update_result("cat", 0.92f);
 _lock_release(&lvgl_api_lock);
 ```
+
+The button and the external API can coexist — the button simply calls `ui_ai_update_result()` internally after its timer fires.
 
 ## Troubleshooting
 
