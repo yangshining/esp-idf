@@ -28,6 +28,12 @@ typedef struct {
  */
 void lcd_touch_init(lcd_touch_handles_t *out);
 
+/**
+ * @brief Set backlight brightness via LEDC PWM.
+ * @param pct  Brightness percentage 0-100.
+ */
+void lcd_touch_set_brightness(uint8_t pct);
+
 #ifdef __cplusplus
 }
 #endif

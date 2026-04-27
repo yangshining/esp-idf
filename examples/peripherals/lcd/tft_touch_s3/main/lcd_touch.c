@@ -4,7 +4,7 @@
  */
 #include <sys/lock.h>
 #include "freertos/FreeRTOS.h"
-#include "driver/gpio.h"
+#include "driver/ledc.h"
 #include "driver/spi_master.h"
 #include "esp_err.h"
 #include "esp_log.h"
@@ -47,13 +47,27 @@ _lock_t lvgl_api_lock;
 
 void lcd_touch_init(lcd_touch_handles_t *out)
 {
-    /* Backlight off during init */
-    gpio_config_t bk_cfg = {
-        .mode = GPIO_MODE_OUTPUT,
-        .pin_bit_mask = 1ULL << CONFIG_EXAMPLE_PIN_NUM_BK_LIGHT,
+    /* Backlight — LEDC PWM init (starts at 0% / off) */
+    ledc_timer_config_t ledc_timer = {
+        .speed_mode      = LEDC_LOW_SPEED_MODE,
+        .timer_num       = LEDC_TIMER_0,
+        .duty_resolution = LEDC_TIMER_13_BIT,
+        .freq_hz         = 5000,
+        .clk_cfg         = LEDC_AUTO_CLK,
     };
-    ESP_ERROR_CHECK(gpio_config(&bk_cfg));
-    gpio_set_level(CONFIG_EXAMPLE_PIN_NUM_BK_LIGHT, LCD_BK_LIGHT_OFF);
+    ESP_ERROR_CHECK(ledc_timer_config(&ledc_timer));
+
+    ledc_channel_config_t ledc_ch = {
+        .speed_mode = LEDC_LOW_SPEED_MODE,
+        .channel    = LEDC_CHANNEL_0,
+        .timer_sel  = LEDC_TIMER_0,
+        .intr_type  = LEDC_INTR_DISABLE,
+        .gpio_num   = CONFIG_EXAMPLE_PIN_NUM_BK_LIGHT,
+        .duty       = 0,
+        .hpoint     = 0,
+    };
+    ESP_ERROR_CHECK(ledc_channel_config(&ledc_ch));
+    /* backlight starts off — duty is already 0 from ledc_channel_config */
 
     /* SPI bus */
     spi_bus_config_t buscfg = {
@@ -112,6 +126,18 @@ void lcd_touch_init(lcd_touch_handles_t *out)
     ESP_ERROR_CHECK(esp_lcd_touch_new_spi_xpt2046(tp_io, &tp_cfg, &out->touch));
 
     /* Backlight on */
-    gpio_set_level(CONFIG_EXAMPLE_PIN_NUM_BK_LIGHT, LCD_BK_LIGHT_ON);
+    lcd_touch_set_brightness(100);
     ESP_LOGI(TAG, "LCD and touch initialised");
+}
+
+void lcd_touch_set_brightness(uint8_t pct)
+{
+    if (pct > 100) pct = 100;
+#if CONFIG_EXAMPLE_BK_LIGHT_ON_LEVEL == 0
+    uint32_t duty = (uint32_t)(100 - pct) * 8191 / 100;
+#else
+    uint32_t duty = (uint32_t)pct * 8191 / 100;
+#endif
+    ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, duty);
+    ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
 }
