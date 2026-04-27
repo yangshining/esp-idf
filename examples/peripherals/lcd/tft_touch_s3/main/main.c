@@ -46,22 +46,21 @@ static void lvgl_flush_cb(lv_display_t *disp, const lv_area_t *area, uint8_t *px
 
 static void lvgl_touch_cb(lv_indev_t *indev, lv_indev_data_t *data)
 {
-    uint16_t x[1] = {0}, y[1] = {0};
-    uint16_t strength[1] = {0};
+    esp_lcd_touch_point_data_t point = {};
     uint8_t cnt = 0;
     esp_lcd_touch_handle_t tp = lv_indev_get_user_data(indev);
     esp_lcd_touch_read_data(tp);
-    bool pressed = esp_lcd_touch_get_coordinates(tp, x, y, strength, &cnt, 1);
-    if (pressed && cnt > 0) {
+    esp_lcd_touch_get_data(tp, &point, &cnt, 1);
+    if (cnt > 0) {
 #ifdef CONFIG_EXAMPLE_TOUCH_LOG
         int64_t now_us = esp_timer_get_time();
         if (now_us - s_last_touch_log_us > 200000) {
-            ESP_LOGI(TAG, "touch: x=%u y=%u z=%u", x[0], y[0], strength[0]);
+            ESP_LOGI(TAG, "touch: x=%u y=%u z=%u", point.coords[0].x, point.coords[0].y, point.coords[0].strength);
             s_last_touch_log_us = now_us;
         }
 #endif
-        data->point.x = x[0];
-        data->point.y = y[0];
+        data->point.x = point.coords[0].x;
+        data->point.y = point.coords[0].y;
         data->state = LV_INDEV_STATE_PRESSED;
     } else {
         data->state = LV_INDEV_STATE_RELEASED;
