@@ -4,14 +4,11 @@
  */
 #include "nvs_flash.h"
 #include "nvs.h"
-#include "esp_log.h"
 #include "settings_store.h"
 
 #define NVS_NS          "tft_settings"
 #define KEY_BRIGHTNESS  "brightness"
 #define KEY_ROTATION    "rotation"
-
-static const char *TAG = "settings_store";
 
 void settings_store_init(void)
 {
