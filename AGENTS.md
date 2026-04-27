@@ -104,20 +104,26 @@ The local customization focus is:
 examples/peripherals/lcd/tft_touch_s3
 ```
 
-This ESP32-S3 demo drives an ST7789 SPI TFT display and an XPT2046 resistive touch controller, with an LVGL 9.3 UI.
+This ESP32-S3 demo drives an ST7789 SPI TFT display and an XPT2046 resistive touch controller, with an LVGL 9.3 UI. It also includes a minimal BLE WiFi provisioning flow and WiFi STA status page.
 
 Key files:
 
 - `main/main.c` - app entry point, LVGL task setup, timer setup
 - `main/lcd_touch.c` and `main/lcd_touch.h` - LCD, touch, SPI, backlight, and LVGL lock integration
+- `main/connectivity/app_net_state.c` and `main/connectivity/app_net_state.h` - shared provisioning/WiFi state model guarded by a FreeRTOS mutex
+- `main/connectivity/app_wifi.c` and `main/connectivity/app_wifi.h` - WiFi STA, `esp_netif`, WiFi/IP event handling, credential clearing
+- `main/connectivity/app_prov.c` and `main/connectivity/app_prov.h` - BLE provisioning manager integration using `network_provisioning`
 - `main/ui/ui_main.c` - tabview creation and page wiring
 - `main/ui/ui_page_home.c` - home page
 - `main/ui/ui_page_ai.c` - AI result label and confidence bar
+- `main/ui/ui_page_network.c` - BLE provisioning and WiFi STA status page
 - `main/ui/ui_page_settings.c` - rotation and backlight controls
 - `main/Kconfig.projbuild` - GPIO/example configuration
+- `partitions.csv` - custom partition table with a 3 MB factory app partition for LVGL + BLE/WiFi
 - `main/idf_component.yml` - managed dependencies:
   - `lvgl/lvgl: "9.3.0"`
   - `atanisoft/esp_lcd_touch_xpt2046: "1.0.6"`
+  - `espressif/network_provisioning: "^1.2.4"`
 
 Build it with:
 
@@ -133,11 +139,28 @@ The ESP32-S3 defaults enable PSRAM:
 CONFIG_SPIRAM=y
 CONFIG_SPIRAM_MODE_OCT=y
 CONFIG_SPIRAM_SPEED_80M=y
+CONFIG_BT_ENABLED=y
+CONFIG_BT_NIMBLE_ENABLED=y
+CONFIG_ESP_PROTOCOMM_SUPPORT_SECURITY_VERSION_1=y
 ```
 
 If the target board has no compatible PSRAM, adjust or override `sdkconfig.defaults.esp32s3`.
 
-When updating LVGL UI from another FreeRTOS task, guard LVGL calls with the exported lock from `lcd_touch.h` before calling `ui_ai_update_result()`.
+When updating LVGL UI from another FreeRTOS task, guard LVGL calls with the exported lock from `lcd_touch.h` before calling `ui_ai_update_result()`. WiFi/BLE event handlers should not call LVGL directly; update `app_net_state` and let an LVGL-side timer/page render the state.
+
+BLE provisioning defaults:
+
+```text
+CONFIG_EXAMPLE_PROV_SERVICE_NAME="edge-ai-lab"
+CONFIG_EXAMPLE_PROV_POP="abcd1234"
+CONFIG_EXAMPLE_WIFI_MAX_RETRY=5
+```
+
+If a build fails with `components/esp_wifi/lib/esp32s3/libcore.a` missing, initialize the WiFi binary submodule:
+
+```bash
+git submodule update --init --recursive -- components/esp_wifi/lib
+```
 
 ## Architecture Overview
 

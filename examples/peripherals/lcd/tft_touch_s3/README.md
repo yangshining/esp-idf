@@ -39,6 +39,19 @@ The `SD_*` pins are for the TF card slot. This example does not use the TF card,
 - XPT2046 touch input is tuned for responsiveness with one sample per read and a pressure threshold of `50`.
 - Touch calibration defaults are `swap_xy = n`, `mirror_x = y`, and `mirror_y = n`.
 - Brightness and rotation settings are saved to NVS partition `"tft_settings"` and restored on every boot.
+- The Network page uses BLE provisioning for first-time WiFi setup, then shows WiFi STA connection state from a small shared state model.
+
+## Software Structure
+
+The demo keeps display, UI, and connectivity separated:
+
+- `main/main.c` initializes NVS, settings, runtime stats, connectivity, LCD/touch, LVGL, and the UI.
+- `main/lcd_touch.c` owns the ST7789 panel, XPT2046 touch controller, backlight PWM, and exported LVGL API lock.
+- `main/connectivity/app_net_state.c` stores the current provisioning/WiFi state behind a FreeRTOS mutex.
+- `main/connectivity/app_wifi.c` initializes `esp_netif`/WiFi STA and translates WiFi/IP events into `app_net_state` updates.
+- `main/connectivity/app_prov.c` starts BLE provisioning through the `network_provisioning` managed component and handles provisioning events.
+- `main/ui/ui_main.c` creates the LVGL tabview and wires Home, AI, Network, and Settings pages.
+- `main/ui/ui_page_network.c` refreshes labels from `app_net_state`; WiFi/BLE event handlers do not call LVGL directly.
 
 ## Recommended Wiring
 
@@ -100,6 +113,11 @@ idf.py -p COMx app-flash monitor
 
 Use `idf.py fullclean` only after target changes, major Kconfig changes, managed component problems, or a corrupted build directory.
 After pulling the BLE provisioning changes, run `idf.py set-target esp32s3` or `idf.py reconfigure` once so the Bluetooth and custom partition defaults are applied to the local `sdkconfig`.
+If the build fails with a missing file under `components/esp_wifi/lib/esp32s3`, initialize the ESP-IDF submodules:
+
+```powershell
+git submodule update --init --recursive -- components/esp_wifi/lib
+```
 
 The build output is written under:
 
@@ -130,6 +148,7 @@ Expected log lines include:
 I (...) lcd_touch: Init XPT2046 touch
 I (...) lcd_touch: LCD and touch initialised
 I (...) main: LVGL task started
+I (...) app_prov: Starting BLE provisioning
 ```
 
 ## Configuration Notes
@@ -184,6 +203,8 @@ On first boot, or after clearing WiFi credentials from the Network page, the dev
 
 After provisioning succeeds, the device connects as a WiFi station and the Network page shows the connected SSID, IPv4 address, and RSSI. The **Clear WiFi** button erases stored WiFi credentials and restarts the board so it enters provisioning again.
 
+The provisioning and WiFi event handlers only update `app_net_state`. LVGL labels are updated by an LVGL timer in the Network page, keeping UI work on the LVGL task side.
+
 ## Integrating AI Results
 
 The AI page has a built-in **Run Inference** button that simulates classification results for demo purposes (random label + confidence 60–99%, 1.5 s delay). To replace it with real inference from a FreeRTOS task, call `ui_ai_update_result()` while holding `lvgl_api_lock`:
@@ -208,4 +229,6 @@ The button and the external API can coexist — the button simply calls `ui_ai_u
 - Touch is mirrored or offset: adjust `EXAMPLE_TOUCH_SWAP_XY`, `EXAMPLE_TOUCH_MIRROR_X`, and `EXAMPLE_TOUCH_MIRROR_Y` in `idf.py menuconfig`.
 - Touch is sluggish: keep `EXAMPLE_TOUCH_LOG` disabled, keep `ESP_LCD_TOUCH_MAX_POINTS=1`, and lower `XPT2046_Z_THRESHOLD` carefully if light touches are missed.
 - Build fails because PSRAM is not found: adjust `sdkconfig.defaults.esp32s3` for your board.
+- Build fails with `components/esp_wifi/lib/esp32s3/libcore.a` missing: initialize the `components/esp_wifi/lib` submodule.
+- The Network page still waits for provisioning after entering credentials: verify the POP (`abcd1234` by default), confirm the AP is 2.4 GHz, and check serial logs for `NETWORK_PROV_WIFI_CRED_FAIL`.
 - Do not connect the TF card `SD_*` pins unless SD card support is added to the example.
