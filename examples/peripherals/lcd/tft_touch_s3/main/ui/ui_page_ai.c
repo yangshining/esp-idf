@@ -167,11 +167,13 @@ static void demo_timer_cb(lv_timer_t *t)
         ai_state_set(AI_DEMO_STATE_SPEAKING, NULL);
         break;
     case AI_DEMO_STATE_SPEAKING:
+        ai_state_set(AI_DEMO_STATE_ERROR, NULL);
+        break;
+    case AI_DEMO_STATE_ERROR:
         ai_state_set(AI_DEMO_STATE_IDLE, NULL);
         lv_timer_pause(t);
         break;
     case AI_DEMO_STATE_IDLE:
-    case AI_DEMO_STATE_ERROR:
     default:
         ai_state_set(AI_DEMO_STATE_IDLE, NULL);
         lv_timer_pause(t);

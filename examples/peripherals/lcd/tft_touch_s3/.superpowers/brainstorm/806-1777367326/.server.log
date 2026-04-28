@@ -1,0 +1,7 @@
+{"type":"server-started","port":49349,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:49349","screen_dir":"D:/code/proj/esp-idf/examples/peripherals/lcd/tft_touch_s3/.superpowers/brainstorm/806-1777367326"}
+{"type":"screen-added","file":"D:\\code\\proj\\esp-idf\\examples\\peripherals\\lcd\\tft_touch_s3\\.superpowers\\brainstorm\\806-1777367326\\ai-input-layouts.html"}
+{"type":"screen-added","file":"D:\\code\\proj\\esp-idf\\examples\\peripherals\\lcd\\tft_touch_s3\\.superpowers\\brainstorm\\806-1777367326\\voice-assistant-concept.html"}
+{"type":"screen-added","file":"D:\\code\\proj\\esp-idf\\examples\\peripherals\\lcd\\tft_touch_s3\\.superpowers\\brainstorm\\806-1777367326\\audio-hardware-paths.html"}
+{"type":"screen-added","file":"D:\\code\\proj\\esp-idf\\examples\\peripherals\\lcd\\tft_touch_s3\\.superpowers\\brainstorm\\806-1777367326\\voice-backend-approaches.html"}
+{"type":"screen-added","file":"D:\\code\\proj\\esp-idf\\examples\\peripherals\\lcd\\tft_touch_s3\\.superpowers\\brainstorm\\806-1777367326\\voice-assistant-architecture.html"}
+{"type":"server-stopped","reason":"idle timeout"}

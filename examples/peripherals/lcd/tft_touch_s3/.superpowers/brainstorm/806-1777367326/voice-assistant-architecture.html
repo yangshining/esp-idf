@@ -1,0 +1,30 @@
+<h2>Proposed Architecture: ESP32-S3 Voice Assistant</h2>
+<p class="subtitle">MVP is turn-based voice. Interfaces are shaped so keyword wake and realtime streaming can be added later.</p>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">ESP32-S3 Firmware</div>
+    <div class="mockup-body" style="height:420px;">
+      <div class="options">
+        <div class="option"><div class="letter">UI</div><div class="content"><h3>Digital avatar page</h3><p>Idle, listening, thinking, speaking, error animations. Minimal captions.</p></div></div>
+        <div class="option"><div class="letter">Mic</div><div class="content"><h3>I2S audio capture</h3><p>Record short mono PCM chunks after touch/button wake.</p></div></div>
+        <div class="option"><div class="letter">Net</div><div class="content"><h3>HTTPS client</h3><p>POST audio to backend proxy with device token, not OpenAI API key.</p></div></div>
+        <div class="option"><div class="letter">Out</div><div class="content"><h3>I2S speaker playback</h3><p>Play backend TTS audio while avatar mouth/face animates.</p></div></div>
+        <div class="option"><div class="letter">State</div><div class="content"><h3>Assistant state model</h3><p>Audio/network tasks update state; LVGL timer renders it safely.</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">Backend Proxy</div>
+    <div class="mockup-body" style="height:420px;">
+      <div class="options">
+        <div class="option"><div class="letter">1</div><div class="content"><h3>Receive audio</h3><p>Validate device token, store request logs without leaking secrets.</p></div></div>
+        <div class="option"><div class="letter">2</div><div class="content"><h3>Transcribe</h3><p>Speech-to-text model turns user audio into text.</p></div></div>
+        <div class="option"><div class="letter">3</div><div class="content"><h3>Reason</h3><p>Configured LLM answers using assistant prompt and optional tools.</p></div></div>
+        <div class="option"><div class="letter">4</div><div class="content"><h3>Synthesize</h3><p>TTS returns audio in a device-friendly format.</p></div></div>
+        <div class="option"><div class="letter">5</div><div class="content"><h3>Respond</h3><p>Return audio plus short status/caption text for the avatar page.</p></div></div>
+      </div>
+    </div>
+  </div>
+</div>

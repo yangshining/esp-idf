@@ -1,0 +1,61 @@
+<h2>Audio Hardware Paths</h2>
+<p class="subtitle">For a real voice assistant, the ESP32-S3 needs a microphone path and a speaker path. These are the realistic build levels.</p>
+
+<div class="cards">
+  <div class="card" data-choice="simple-i2s" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">Simple Voice Terminal</div>
+        <div class="mockup-body" style="height:250px;">
+          <div class="options">
+            <div class="option"><div class="letter">Mic</div><div class="content"><h3>I2S MEMS mic</h3><p>INMP441 / SPH0645 style module</p></div></div>
+            <div class="option"><div class="letter">Out</div><div class="content"><h3>I2S amp</h3><p>MAX98357A style speaker driver</p></div></div>
+            <div class="option"><div class="letter">Wake</div><div class="content"><h3>Touch/button first</h3><p>Hold to talk, then later add keyword</p></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. Simple I2S Modules</h3>
+      <p>Best first prototype. Fewer moving parts, easier ESP-IDF integration, good enough for demo voice Q&A.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="codec-board" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">Codec Board</div>
+        <div class="mockup-body" style="height:250px;">
+          <div class="options">
+            <div class="option"><div class="letter">Mic</div><div class="content"><h3>Codec mic input</h3><p>Analog or onboard mic</p></div></div>
+            <div class="option"><div class="letter">Out</div><div class="content"><h3>Codec speaker/headphone</h3><p>Cleaner audio path</p></div></div>
+            <div class="option"><div class="letter">Cost</div><div class="content"><h3>More setup</h3><p>I2C config + codec driver</p></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. Audio Codec Board</h3>
+      <p>Better audio and control, but more firmware work. Good if this will become a polished hardware demo.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="devkit-audio" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">Audio Dev Board</div>
+        <div class="mockup-body" style="height:250px;">
+          <div class="options">
+            <div class="option"><div class="letter">Board</div><div class="content"><h3>ESP32-S3 audio kit</h3><p>Known mic/speaker hardware</p></div></div>
+            <div class="option"><div class="letter">LCD</div><div class="content"><h3>May need rewiring</h3><p>Pin conflicts must be checked</p></div></div>
+            <div class="option"><div class="letter">Goal</div><div class="content"><h3>Fastest reliable audio</h3><p>Less soldering, more board change</p></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C. Audio-Oriented Dev Board</h3>
+      <p>Best if voice quality matters more than keeping the current wiring exactly as-is.</p>
+    </div>
+  </div>
+</div>

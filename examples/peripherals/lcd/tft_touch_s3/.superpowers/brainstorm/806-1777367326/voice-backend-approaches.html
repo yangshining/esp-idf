@@ -1,0 +1,62 @@
+<h2>Backend Voice Pipeline Options</h2>
+<p class="subtitle">You chose: backend proxy, add audio modules, button first then keyword wake. Now choose the first voice pipeline.</p>
+
+<div class="cards">
+  <div class="card" data-choice="turn-based" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">Recommended MVP: Turn-Based Voice</div>
+        <div class="mockup-body" style="height:280px;">
+          <div class="options">
+            <div class="option"><div class="letter">1</div><div class="content"><h3>Press / wake</h3><p>Avatar listens</p></div></div>
+            <div class="option"><div class="letter">2</div><div class="content"><h3>Upload short audio</h3><p>HTTP POST /assist</p></div></div>
+            <div class="option"><div class="letter">3</div><div class="content"><h3>Backend chains ASR + LLM + TTS</h3><p>Easy logs and control</p></div></div>
+            <div class="option"><div class="letter">4</div><div class="content"><h3>Play returned audio</h3><p>Avatar speaks</p></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. Turn-Based Pipeline</h3>
+      <p>Best first implementation. Slightly higher latency, but much easier on ESP32-S3 memory and debugging.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="backend-realtime" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">Backend Realtime Bridge</div>
+        <div class="mockup-body" style="height:280px;">
+          <div class="options">
+            <div class="option"><div class="letter">1</div><div class="content"><h3>ESP streams audio</h3><p>WebSocket to your backend</p></div></div>
+            <div class="option"><div class="letter">2</div><div class="content"><h3>Backend talks Realtime</h3><p>OpenAI key stays server-side</p></div></div>
+            <div class="option"><div class="letter">3</div><div class="content"><h3>Audio streams back</h3><p>Lower latency, more protocol work</p></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. Realtime Bridge</h3>
+      <p>More natural conversations. Better as phase two after audio capture/playback is proven.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="hybrid" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">Hybrid Upgrade Path</div>
+        <div class="mockup-body" style="height:280px;">
+          <div class="options">
+            <div class="option"><div class="letter">MVP</div><div class="content"><h3>HTTP turn-based</h3><p>Ship working demo first</p></div></div>
+            <div class="option"><div class="letter">V2</div><div class="content"><h3>Keyword wake</h3><p>Local wake word or backend VAD</p></div></div>
+            <div class="option"><div class="letter">V3</div><div class="content"><h3>Realtime mode</h3><p>Streaming when UX needs it</p></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C. Hybrid Roadmap</h3>
+      <p>Design interfaces now so MVP is simple and can grow into realtime later. This is my recommendation.</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,61 @@
+<h2>AI Page Interaction Style</h2>
+<p class="subtitle">Pick the input style that best matches the ESP32-S3 240x320 touch screen demo.</p>
+
+<div class="cards">
+  <div class="card" data-choice="quick-prompts" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">AI Assistant</div>
+        <div class="mockup-body" style="height:260px; display:flex; flex-direction:column; gap:8px;">
+          <div class="placeholder" style="height:48px;">Status: WiFi connected</div>
+          <div class="placeholder" style="height:62px;">Answer preview wraps here</div>
+          <button class="mock-button">Summarize sensor state</button>
+          <button class="mock-button">Explain error</button>
+          <button class="mock-button">Ask custom...</button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. Quick Prompts</h3>
+      <p>Preset buttons plus one optional custom question. Fastest and most reliable on a small resistive touch display.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="keyboard-chat" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">Chat</div>
+        <div class="mockup-body" style="height:260px; display:flex; flex-direction:column; gap:8px;">
+          <div class="placeholder" style="height:124px;">Messages scroll here</div>
+          <input class="mock-input" placeholder="Type question">
+          <div style="display:grid; grid-template-columns:repeat(6,1fr); gap:3px;">
+            <button class="mock-button">Q</button><button class="mock-button">W</button><button class="mock-button">E</button>
+            <button class="mock-button">R</button><button class="mock-button">T</button><button class="mock-button">Y</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. Full Keyboard Chat</h3>
+      <p>Most flexible, but the keyboard consumes the screen and resistive touch typing can feel slow.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="companion-chat" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">Device + Companion</div>
+        <div class="mockup-body" style="height:260px; display:flex; flex-direction:column; gap:8px;">
+          <div class="placeholder" style="height:70px;">ESP32 shows answer/status</div>
+          <div class="placeholder" style="height:58px;">QR / pairing code</div>
+          <button class="mock-button">Refresh answer</button>
+          <button class="mock-button">Show last prompt</button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C. Companion Chat</h3>
+      <p>Phone/browser does text entry; ESP32 displays assistant output. Great demo ergonomics, slightly more system work.</p>
+    </div>
+  </div>
+</div>

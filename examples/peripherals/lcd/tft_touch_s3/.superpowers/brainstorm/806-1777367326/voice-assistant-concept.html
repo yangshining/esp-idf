@@ -1,0 +1,43 @@
+<h2>Voice AI Assistant Concept</h2>
+<p class="subtitle">The ESP32-S3 becomes a voice terminal. The backend owns the model API key and speech pipeline.</p>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">Device UI: Digital Avatar</div>
+    <div class="mockup-body" style="height:330px; display:flex; flex-direction:column; align-items:center; justify-content:space-between; gap:10px;">
+      <div style="width:155px; height:155px; border-radius:50%; border:4px solid #4f8cff; display:flex; align-items:center; justify-content:center; font-size:54px; background:#eef5ff;">
+        ^_^
+      </div>
+      <div class="placeholder" style="height:42px; width:90%;">Listening / Thinking / Speaking</div>
+      <div style="display:flex; gap:8px; width:92%;">
+        <button class="mock-button" style="flex:1;">Wake</button>
+        <button class="mock-button" style="flex:1;">Mute</button>
+      </div>
+      <div class="placeholder" style="height:34px; width:90%;">Tiny captions: optional</div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">Recommended Data Flow</div>
+    <div class="mockup-body" style="height:330px;">
+      <div class="options">
+        <div class="option">
+          <div class="letter">1</div>
+          <div class="content"><h3>Wake</h3><p>Button first, keyword later if hardware and memory allow.</p></div>
+        </div>
+        <div class="option">
+          <div class="letter">2</div>
+          <div class="content"><h3>Record</h3><p>I2S mic captures short audio and streams/uploads to your backend.</p></div>
+        </div>
+        <div class="option">
+          <div class="letter">3</div>
+          <div class="content"><h3>Think</h3><p>Backend runs ASR, calls the configured LLM, then runs TTS.</p></div>
+        </div>
+        <div class="option">
+          <div class="letter">4</div>
+          <div class="content"><h3>Speak</h3><p>ESP32 plays response audio while the avatar animates.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
