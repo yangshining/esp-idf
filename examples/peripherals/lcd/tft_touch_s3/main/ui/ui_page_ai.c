@@ -103,11 +103,8 @@ static void ai_page_render(void)
 
     lv_label_set_text_static(s_face_label, ai_state_face(s_demo_state));
     lv_label_set_text_static(s_status_label, ai_state_status(s_demo_state));
-    if (s_caption_text[0] != '\0') {
-        lv_label_set_text(s_caption_label, s_caption_text);
-    } else {
-        lv_label_set_text_static(s_caption_label, ai_state_caption(s_demo_state));
-    }
+    lv_label_set_text(s_caption_label,
+                      s_caption_text[0] != '\0' ? s_caption_text : ai_state_caption(s_demo_state));
 
     if (s_wake_btn_label != NULL) {
         lv_label_set_text_static(s_wake_btn_label,
@@ -224,9 +221,9 @@ void ui_page_ai_init(lv_obj_t *parent)
     lv_obj_align(s_status_label, LV_ALIGN_TOP_MID, 0, 170);
 
     s_caption_label = lv_label_create(parent);
-    lv_obj_set_width(s_caption_label, UI_AI_STATUS_WIDTH);
+    lv_obj_set_size(s_caption_label, UI_AI_STATUS_WIDTH, 22);
     lv_obj_set_style_text_align(s_caption_label, LV_TEXT_ALIGN_CENTER, 0);
-    lv_label_set_long_mode(s_caption_label, LV_LABEL_LONG_WRAP);
+    lv_label_set_long_mode(s_caption_label, LV_LABEL_LONG_MODE_DOTS);
     lv_obj_align(s_caption_label, LV_ALIGN_TOP_MID, 0, 202);
 
     s_wake_btn = lv_button_create(parent);
