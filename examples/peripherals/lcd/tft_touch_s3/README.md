@@ -217,7 +217,7 @@ The AI page is currently a Phase 1 mock voice-assistant UI. Its controls simulat
 #include "lcd_touch.h"
 
 _lock_acquire(&lvgl_api_lock);
-ui_ai_update_result("cat", 0.92f);
+ui_ai_update_result("Here is a reply", 0.0f);
 _lock_release(&lvgl_api_lock);
 ```
 
