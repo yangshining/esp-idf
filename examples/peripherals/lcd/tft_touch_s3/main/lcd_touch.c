@@ -47,6 +47,7 @@ _lock_t lvgl_api_lock;
 
 void lcd_touch_init(lcd_touch_handles_t *out)
 {
+    _lock_init(&lvgl_api_lock);
     /* Backlight — LEDC PWM init (starts at 0% / off) */
     ledc_timer_config_t ledc_timer = {
         .speed_mode      = LEDC_LOW_SPEED_MODE,

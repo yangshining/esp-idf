@@ -143,7 +143,7 @@ esp_err_t app_prov_start(void)
     network_prov_security_t security = NETWORK_PROV_SECURITY_1;
     network_prov_security1_params_t *sec_params = (network_prov_security1_params_t *)CONFIG_EXAMPLE_PROV_POP;
 
-    ESP_LOGI(TAG, "Starting BLE provisioning, service name: %s, POP: %s", service_name, CONFIG_EXAMPLE_PROV_POP);
+    ESP_LOGI(TAG, "Starting BLE provisioning, service name: %s", service_name);
     app_net_state_set_status(APP_NET_STATUS_PROV_WAITING);
     return network_prov_mgr_start_provisioning(security, (const void *)sec_params, service_name, NULL);
 }
