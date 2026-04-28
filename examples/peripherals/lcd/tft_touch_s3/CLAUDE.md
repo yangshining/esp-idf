@@ -95,6 +95,8 @@ _lock_release(&lvgl_api_lock);
 
 `ui_ai_update_result(const char *label, float confidence)` updates the AI tab. Call it under `lvgl_api_lock` when invoked from a worker task.
 
+The confidence bar uses a first-order IIR low-pass interpolation (exponential-decay step) driven by a paused LVGL timer. The timer is resumed by `ui_ai_update_result()` and pauses itself when converged. Do not call `lv_bar_set_value()` on the confidence bar directly from outside this module.
+
 Inference logic should live outside UI files, usually in its own FreeRTOS task or module. The UI API should remain thin.
 
 ## Settings And Stats
@@ -110,5 +112,7 @@ Important defaults:
 - `sdkconfig.defaults.esp32s3` enables PSRAM, Bluetooth, NimBLE, and FreeRTOS runtime stats.
 - `sdkconfig.defaults` enables LVGL defaults, XPT2046 defaults, custom partition table, and protocomm security v1.
 - `partitions.csv` gives the factory app a 3 MB partition for LVGL plus BLE/WiFi.
+
+UI layout constants (timer periods, widget sizes, animation parameters) belong in `main/ui/ui_config.h`. Do not use inline magic numbers in UI page files.
 
 Keep `README.md`, `AGENTS.md`, `CLAUDE.md`, `Kconfig.projbuild`, and GPIO defaults consistent when changing behavior.

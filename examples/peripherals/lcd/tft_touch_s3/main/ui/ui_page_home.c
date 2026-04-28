@@ -8,9 +8,8 @@
 #include "esp_heap_caps.h"
 #include "lvgl.h"
 #include "sys_stats.h"
+#include "ui_config.h"
 #include "ui_page_home.h"
-
-#define CHART_POINTS 30
 
 static lv_obj_t *s_uptime_label;
 static lv_obj_t *s_heap_chart;
@@ -47,10 +46,10 @@ void ui_page_home_init(lv_obj_t *parent)
     lv_obj_align(heap_lbl, LV_ALIGN_TOP_MID, 0, 30);
 
     s_heap_chart = lv_chart_create(parent);
-    lv_obj_set_size(s_heap_chart, 210, 80);
+    lv_obj_set_size(s_heap_chart, UI_CHART_WIDTH, UI_CHART_HEIGHT);
     lv_obj_align(s_heap_chart, LV_ALIGN_TOP_MID, 0, 48);
     lv_chart_set_type(s_heap_chart, LV_CHART_TYPE_LINE);
-    lv_chart_set_point_count(s_heap_chart, CHART_POINTS);
+    lv_chart_set_point_count(s_heap_chart, UI_CHART_POINTS);
     int32_t total_kb = (int32_t)(esp_get_free_heap_size() / 1024 + 10);
     lv_chart_set_range(s_heap_chart, LV_CHART_AXIS_PRIMARY_Y, 0, total_kb);
     lv_chart_set_div_line_count(s_heap_chart, 3, 0);
@@ -63,10 +62,10 @@ void ui_page_home_init(lv_obj_t *parent)
     lv_obj_align(cpu_lbl, LV_ALIGN_TOP_MID, 0, 138);
 
     s_cpu_chart = lv_chart_create(parent);
-    lv_obj_set_size(s_cpu_chart, 210, 80);
+    lv_obj_set_size(s_cpu_chart, UI_CHART_WIDTH, UI_CHART_HEIGHT);
     lv_obj_align(s_cpu_chart, LV_ALIGN_TOP_MID, 0, 156);
     lv_chart_set_type(s_cpu_chart, LV_CHART_TYPE_LINE);
-    lv_chart_set_point_count(s_cpu_chart, CHART_POINTS);
+    lv_chart_set_point_count(s_cpu_chart, UI_CHART_POINTS);
     lv_chart_set_range(s_cpu_chart, LV_CHART_AXIS_PRIMARY_Y, 0, 100);
     lv_chart_set_div_line_count(s_cpu_chart, 3, 0);
     s_cpu_ser = lv_chart_add_series(s_cpu_chart, lv_palette_main(LV_PALETTE_RED),
@@ -77,5 +76,5 @@ void ui_page_home_init(lv_obj_t *parent)
     lv_label_set_text_static(s_uptime_label, LV_SYMBOL_REFRESH " 0 s");
     lv_obj_align(s_uptime_label, LV_ALIGN_BOTTOM_MID, 0, -6);
 
-    lv_timer_create(stats_timer_cb, 1000, NULL);
+    lv_timer_create(stats_timer_cb, UI_TIMER_HOME_MS, NULL);
 }

@@ -6,6 +6,7 @@
 #include "lvgl.h"
 #include "app_net_state.h"
 #include "app_prov.h"
+#include "ui_config.h"
 #include "ui_page_network.h"
 
 static lv_obj_t *s_status_label;
@@ -50,13 +51,13 @@ void ui_page_network_init(lv_obj_t *parent)
     lv_obj_align(title, LV_ALIGN_TOP_MID, 0, 6);
 
     s_status_label = lv_label_create(parent);
-    lv_obj_set_width(s_status_label, 220);
+    lv_obj_set_width(s_status_label, UI_NET_LABEL_WIDTH);
     lv_label_set_long_mode(s_status_label, LV_LABEL_LONG_WRAP);
     lv_label_set_text_static(s_status_label, "Status: -");
     lv_obj_align(s_status_label, LV_ALIGN_TOP_LEFT, 10, 36);
 
     s_ssid_label = lv_label_create(parent);
-    lv_obj_set_width(s_ssid_label, 220);
+    lv_obj_set_width(s_ssid_label, UI_NET_LABEL_WIDTH);
     lv_label_set_long_mode(s_ssid_label, LV_LABEL_LONG_DOT);
     lv_label_set_text_static(s_ssid_label, "SSID: -");
     lv_obj_align(s_ssid_label, LV_ALIGN_TOP_LEFT, 10, 68);
@@ -70,13 +71,13 @@ void ui_page_network_init(lv_obj_t *parent)
     lv_obj_align(s_rssi_label, LV_ALIGN_TOP_LEFT, 10, 124);
 
     s_error_label = lv_label_create(parent);
-    lv_obj_set_width(s_error_label, 220);
+    lv_obj_set_width(s_error_label, UI_NET_LABEL_WIDTH);
     lv_label_set_long_mode(s_error_label, LV_LABEL_LONG_DOT);
     lv_label_set_text_static(s_error_label, "Last error: -");
     lv_obj_align(s_error_label, LV_ALIGN_TOP_LEFT, 10, 152);
 
     lv_obj_t *clear_btn = lv_button_create(parent);
-    lv_obj_set_size(clear_btn, 160, 40);
+    lv_obj_set_size(clear_btn, UI_NET_BTN_WIDTH, UI_NET_BTN_HEIGHT);
     lv_obj_align(clear_btn, LV_ALIGN_BOTTOM_MID, 0, -14);
     lv_obj_add_event_cb(clear_btn, reprovision_btn_cb, LV_EVENT_CLICKED, NULL);
 
@@ -84,6 +85,6 @@ void ui_page_network_init(lv_obj_t *parent)
     lv_label_set_text_static(clear_label, "Clear WiFi");
     lv_obj_center(clear_label);
 
-    lv_timer_create(network_timer_cb, 1000, NULL);
+    lv_timer_create(network_timer_cb, UI_TIMER_NET_MS, NULL);
     network_timer_cb(NULL);
 }

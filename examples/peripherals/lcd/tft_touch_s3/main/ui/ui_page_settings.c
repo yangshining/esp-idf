@@ -5,6 +5,7 @@
 #include "lvgl.h"
 #include "lcd_touch.h"
 #include "settings_store.h"
+#include "ui_config.h"
 #include "ui_page_settings.h"
 
 static lv_display_rotation_t s_rotation = LV_DISPLAY_ROTATION_0;
@@ -41,7 +42,7 @@ void ui_page_settings_init(lv_obj_t *parent, lv_display_t *disp)
     lv_obj_align(bk_label, LV_ALIGN_CENTER, 0, -10);
 
     lv_obj_t *slider = lv_slider_create(parent);
-    lv_obj_set_width(slider, 180);
+    lv_obj_set_width(slider, UI_SLIDER_WIDTH);
     lv_obj_align(slider, LV_ALIGN_CENTER, 0, 20);
     lv_obj_add_event_cb(slider, backlight_slider_cb, LV_EVENT_VALUE_CHANGED, NULL);
 
