@@ -10,7 +10,7 @@ The default configuration has been verified on an ESP32-S3 N16R8 development boa
 The demo renders a four-page LVGL v9 UI:
 
 - **Home:** real-time heap free (KB) and CPU load (%) rolling charts, plus uptime counter
-- **AI:** result label, confidence bar, and a **Run Inference** button that simulates a classification result after 1.5 s; the `ui_ai_update_result()` API is the hook for real inference tasks
+- **AI:** Phase 1 voice-assistant avatar prototype with local simulated listening, thinking, speaking, and error states; later phases connect audio hardware and a backend proxy
 - **Network:** BLE WiFi provisioning and WiFi STA status, including SSID, IP address, RSSI, and last error
 - **Settings:** screen rotation (4 orientations) and backlight brightness slider (PWM, 0–100%), both persisted to NVS and restored on reboot
 
@@ -51,6 +51,7 @@ The demo keeps display, UI, and connectivity separated:
 - `main/connectivity/app_wifi.c` initializes `esp_netif`/WiFi STA and translates WiFi/IP events into `app_net_state` updates.
 - `main/connectivity/app_prov.c` starts BLE provisioning through the `network_provisioning` managed component and handles provisioning events.
 - `main/ui/ui_main.c` creates the LVGL tabview and wires Home, AI, Network, and Settings pages.
+- `main/ui/ui_page_ai.c` renders the Phase 1 voice-assistant avatar prototype and local mock state transitions.
 - `main/ui/ui_page_network.c` refreshes labels from `app_net_state`; WiFi/BLE event handlers do not call LVGL directly.
 
 ## Recommended Wiring
@@ -207,7 +208,9 @@ The provisioning and WiFi event handlers only update `app_net_state`. LVGL label
 
 ## Integrating AI Results
 
-The AI page has a built-in **Run Inference** button that simulates classification results for demo purposes (random label + confidence 60–99%, 1.5 s delay). To replace it with real inference from a FreeRTOS task, call `ui_ai_update_result()` while holding `lvgl_api_lock`:
+The AI page is currently a Phase 1 mock voice-assistant UI. Its controls simulate local listening, thinking, speaking, and error states only; there is no audio hardware path, backend proxy, or assistant-state module yet.
+
+`ui_ai_update_result(const char *label, float confidence)` remains as a compatibility hook. The label updates the avatar caption and speaking state, while confidence is ignored. If it is invoked from outside the LVGL task context, call it while holding `lvgl_api_lock`:
 
 ```c
 #include "ui_page_ai.h"
@@ -218,7 +221,7 @@ ui_ai_update_result("cat", 0.92f);
 _lock_release(&lvgl_api_lock);
 ```
 
-The button and the external API can coexist — the button simply calls `ui_ai_update_result()` internally after its timer fires.
+Future audio/backend work should add an `assistant_state` module for cross-task state and keep audio or network work out of LVGL callbacks. LVGL-side timers/pages should render assistant state from LVGL task context.
 
 ## Troubleshooting
 

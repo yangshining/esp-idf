@@ -26,7 +26,7 @@ Keep changes focused on this example unless the user explicitly asks for framewo
 - `main/ui/ui_config.h` - central UI constants (timer periods, animation parameters, widget dimensions); add new UI constants here instead of inline magic numbers
 - `main/ui/ui_main.c` - LVGL tabview creation and page wiring
 - `main/ui/ui_page_home.c` - heap/CPU charts and uptime
-- `main/ui/ui_page_ai.c` - AI result label, confidence bar with IIR interpolation animation, and simulated inference button
+- `main/ui/ui_page_ai.c` - Phase 1 voice-assistant avatar prototype with local mock listening/thinking/speaking/error states
 - `main/ui/ui_page_network.c` - BLE provisioning and WiFi STA status page
 - `main/ui/ui_page_settings.c` - rotation and backlight controls
 - `main/Kconfig.projbuild` - GPIO, touch, provisioning, and WiFi retry configuration
@@ -67,6 +67,7 @@ Do not commit `build/`, `sdkconfig`, `sdkconfig.old`, downloaded `managed_compon
 - Event handlers should update `app_net_state`; LVGL pages should read that state from LVGL task context.
 - The Network page currently uses an LVGL timer to refresh status labels from `app_net_state`.
 - The **Clear WiFi** button calls provisioning reset/credential clearing and restarts the board.
+- Phase 1 AI is UI-only; future audio/backend tasks should add `assistant_state` and keep network/audio work out of LVGL callbacks.
 
 ## LVGL Threading
 

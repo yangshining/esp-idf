@@ -9,7 +9,7 @@ This is the `tft_touch_s3` ESP32-S3 example inside the ESP-IDF repository. It dr
 The current demo is an Edge AI Lab screen with a four-page tabview UI:
 
 - **Home** - heap free, CPU load, and uptime
-- **AI** - simulated inference result and confidence bar
+- **AI** - Phase 1 voice-assistant avatar prototype with local mock states
 - **Network** - BLE WiFi provisioning and WiFi STA status
 - **Setup** - rotation and backlight brightness controls
 
@@ -93,11 +93,11 @@ _lock_release(&lvgl_api_lock);
 
 ## AI Integration Point
 
-`ui_ai_update_result(const char *label, float confidence)` updates the AI tab. Call it under `lvgl_api_lock` when invoked from a worker task.
+The AI tab is currently a Phase 1 voice-assistant avatar prototype. It simulates listening, thinking, speaking, and error states locally; it does not yet use audio hardware, a backend proxy, or shared assistant state.
 
-The confidence bar uses a first-order IIR low-pass interpolation (exponential-decay step) driven by a paused LVGL timer. The timer is resumed by `ui_ai_update_result()` and pauses itself when converged. Do not call `lv_bar_set_value()` on the confidence bar directly from outside this module.
+`ui_ai_update_result(const char *label, float confidence)` remains as a compatibility hook. The label updates the avatar caption/speaking state, while confidence is ignored. Call it under `lvgl_api_lock` when invoked from outside LVGL task context.
 
-Inference logic should live outside UI files, usually in its own FreeRTOS task or module. The UI API should remain thin.
+Future audio/backend work should add an `assistant_state` module for cross-task state. Keep network and audio work out of LVGL callbacks; UI files should only render state on the LVGL task side.
 
 ## Settings And Stats
 
