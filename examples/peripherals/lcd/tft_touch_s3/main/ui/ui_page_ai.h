@@ -12,10 +12,10 @@ extern "C" {
 void ui_page_ai_init(lv_obj_t *parent);
 
 /**
- * @brief Update AI inference result display.
+ * @brief Update the AI avatar caption and speaking state.
  *        Caller must hold lvgl_api_lock (from lcd_touch.h) before calling.
- * @param label      Classification label string (e.g. "cat")
- * @param confidence Confidence score, 0.0 to 1.0
+ * @param label      Assistant caption or reply text.
+ * @param confidence Kept for compatibility; ignored by the Phase 1 avatar page.
  */
 void ui_ai_update_result(const char *label, float confidence);
 
