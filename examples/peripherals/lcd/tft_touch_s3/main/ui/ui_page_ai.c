@@ -121,7 +121,7 @@ static void anim_timer_cb(lv_timer_t *t)
     int32_t y_offset = 0;
     switch (s_demo_state) {
     case AI_DEMO_STATE_LISTENING:
-    case AI_DEMO_STATE_UPLOADING:
+    case AI_DEMO_STATE_UPLOADING:  /* same bobbing motion as LISTENING */
         y_offset = (s_anim_tick % 2) == 0 ? -2 : 2;
         break;
     case AI_DEMO_STATE_THINKING:
@@ -233,6 +233,7 @@ void ui_page_ai_init(lv_obj_t *parent)
     lv_timer_pause(s_demo_timer);
 
     ai_state_set(AI_DEMO_STATE_IDLE, NULL);
+    ai_page_render();
 }
 
 void ui_ai_update_result(const char *label, float confidence)
