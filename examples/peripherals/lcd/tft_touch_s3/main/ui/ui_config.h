@@ -7,7 +7,11 @@
 /* Timer intervals */
 #define UI_TIMER_HOME_MS        1000    /* home stats refresh period */
 #define UI_TIMER_NET_MS         1000    /* network status refresh period */
-#define UI_AI_DEMO_STEP_MS      1600    /* avatar demo state duration */
+#define UI_AI_DEMO_STEP_LISTEN_MS   2000    /* listening state dwell */
+#define UI_AI_DEMO_STEP_UPLOAD_MS   1200    /* uploading state dwell */
+#define UI_AI_DEMO_STEP_THINK_MS    2000    /* thinking state dwell */
+#define UI_AI_DEMO_STEP_SPEAK_MS    2400    /* speaking state dwell */
+#define UI_AI_DEMO_STEP_ERROR_MS    1600    /* error state dwell */
 
 /* AI avatar animation */
 #define UI_AI_ANIM_PERIOD_MS    120     /* avatar animation tick period */
