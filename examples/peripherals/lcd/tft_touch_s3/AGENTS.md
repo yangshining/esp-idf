@@ -66,7 +66,7 @@ Do not commit `build/`, `sdkconfig`, `sdkconfig.old`, downloaded `managed_compon
 - WiFi/BLE event handlers must not call LVGL directly.
 - Event handlers should update `app_net_state`; LVGL pages should read that state from LVGL task context.
 - The Network page currently uses an LVGL timer to refresh status labels from `app_net_state`.
-- The **Clear WiFi** button calls provisioning reset/credential clearing and restarts the board.
+- The **Reset WiFi** button calls provisioning reset/credential clearing and restarts the board.
 - Phase 1 AI is UI-only; future audio/backend tasks should add `assistant_state` and keep network/audio work out of LVGL callbacks.
 
 ## LVGL Threading

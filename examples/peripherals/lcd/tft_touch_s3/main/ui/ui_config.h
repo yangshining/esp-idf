@@ -30,3 +30,4 @@
 #define UI_NET_LABEL_WIDTH      220
 #define UI_NET_BTN_WIDTH        160
 #define UI_NET_BTN_HEIGHT       40
+#define UI_BACKLIGHT_MIN        10   /* lowest slider value — avoids black screen */

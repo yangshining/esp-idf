@@ -4,6 +4,7 @@
  */
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 #include "lvgl.h"
 #include "ui_config.h"
 #include "ui_page_ai.h"
@@ -24,15 +25,15 @@ typedef struct {
 } state_color_t;
 
 static const char *const s_state_frames[AI_DEMO_STATE_COUNT][4] = {
-    /* IDLE      */ {"^_^", "-_-", NULL, NULL},
-    /* LISTENING */ {"o_o", "O_O", NULL, NULL},
+    /* IDLE      */ {"^_^", "-_-", NULL,  NULL},
+    /* LISTENING */ {"o_o", "O_O", NULL,  NULL},
     /* UPLOADING */ {"._.", ">._", "._<", NULL},
     /* THINKING  */ {"-_-", "...", "._.", NULL},
-    /* SPEAKING  */ {"^o^", "^O^", NULL, NULL},
-    /* ERROR     */ {"x_x", NULL,  NULL, NULL},
+    /* SPEAKING  */ {"^o^", "^O^", NULL,  NULL},
+    /* ERROR     */ {"x_x", "x_x", "",   ""},    /* blink: 2 on, 2 off */
 };
 
-static const uint8_t s_frame_counts[AI_DEMO_STATE_COUNT] = {2, 2, 3, 3, 2, 1};
+static const uint8_t s_frame_counts[AI_DEMO_STATE_COUNT] = {2, 2, 3, 3, 2, 4};
 
 static const state_color_t s_state_colors[AI_DEMO_STATE_COUNT] = {
     /* IDLE      */ {LV_PALETTE_BLUE,   4},
@@ -69,15 +70,9 @@ static void ai_caption_set(const char *text)
 {
     if (text == NULL || text[0] == '\0') {
         s_caption_text[0] = '\0';
-        return;
+    } else {
+        snprintf(s_caption_text, sizeof(s_caption_text), "%s", text);
     }
-
-    size_t i = 0;
-    while (i < (sizeof(s_caption_text) - 1) && text[i] != '\0') {
-        s_caption_text[i] = text[i];
-        i++;
-    }
-    s_caption_text[i] = '\0';
 }
 
 static void ai_page_render(void)
@@ -215,10 +210,10 @@ void ui_page_ai_init(lv_obj_t *parent)
     lv_obj_align(s_status_label, LV_ALIGN_TOP_MID, 0, 170);
 
     s_caption_label = lv_label_create(parent);
-    lv_obj_set_size(s_caption_label, UI_AI_STATUS_WIDTH, 22);
+    lv_obj_set_size(s_caption_label, UI_AI_STATUS_WIDTH, 36);
     lv_obj_set_style_text_align(s_caption_label, LV_TEXT_ALIGN_CENTER, 0);
-    lv_label_set_long_mode(s_caption_label, LV_LABEL_LONG_MODE_DOTS);
-    lv_obj_align(s_caption_label, LV_ALIGN_TOP_MID, 0, 202);
+    lv_label_set_long_mode(s_caption_label, LV_LABEL_LONG_WRAP);
+    lv_obj_align(s_caption_label, LV_ALIGN_TOP_MID, 0, 198);
 
     s_wake_btn = lv_button_create(parent);
     lv_obj_set_size(s_wake_btn, UI_AI_WAKE_BTN_WIDTH, UI_AI_WAKE_BTN_HEIGHT);

@@ -12,7 +12,7 @@ The demo renders a four-page LVGL v9 UI:
 - **Home:** real-time heap free (KB) and CPU load (%) rolling charts, plus uptime counter
 - **AI:** Phase 1 voice-assistant avatar prototype with local simulated listening, uploading, thinking, speaking, and error states; later phases connect audio hardware and a backend proxy
 - **Network:** BLE WiFi provisioning and WiFi STA status, including SSID, IP address, RSSI, and last error
-- **Settings:** screen rotation (4 orientations) and backlight brightness slider (PWM, 0–100%), both persisted to NVS and restored on reboot
+- **Settings:** screen rotation (4 orientations) and backlight brightness slider (PWM, 10–100%), both persisted to NVS and restored on reboot
 
 ## Hardware
 
@@ -202,7 +202,7 @@ On first boot, or after clearing WiFi credentials from the Network page, the dev
 - Service name: `edge-ai-lab-XXXXXX`, where `XXXXXX` is derived from the STA MAC address
 - Proof-of-possession: `abcd1234` by default
 
-After provisioning succeeds, the device connects as a WiFi station and the Network page shows the connected SSID, IPv4 address, and RSSI. The **Clear WiFi** button erases stored WiFi credentials and restarts the board so it enters provisioning again.
+After provisioning succeeds, the device connects as a WiFi station and the Network page shows the connected SSID, IPv4 address, and RSSI. The **Reset WiFi** button erases stored WiFi credentials and restarts the board so it enters provisioning again.
 
 The provisioning and WiFi event handlers only update `app_net_state`. LVGL labels are updated by an LVGL timer in the Network page, keeping UI work on the LVGL task side.
 

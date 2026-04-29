@@ -52,29 +52,33 @@ void ui_page_network_init(lv_obj_t *parent)
 
     s_status_label = lv_label_create(parent);
     lv_obj_set_width(s_status_label, UI_NET_LABEL_WIDTH);
-    lv_label_set_long_mode(s_status_label, LV_LABEL_LONG_WRAP);
+    lv_label_set_long_mode(s_status_label, LV_LABEL_LONG_DOT);
     lv_label_set_text_static(s_status_label, "Status: -");
-    lv_obj_align(s_status_label, LV_ALIGN_TOP_LEFT, 10, 36);
+    lv_obj_align(s_status_label, LV_ALIGN_TOP_MID, 0, 36);
 
     s_ssid_label = lv_label_create(parent);
     lv_obj_set_width(s_ssid_label, UI_NET_LABEL_WIDTH);
     lv_label_set_long_mode(s_ssid_label, LV_LABEL_LONG_DOT);
     lv_label_set_text_static(s_ssid_label, "SSID: -");
-    lv_obj_align(s_ssid_label, LV_ALIGN_TOP_LEFT, 10, 68);
+    lv_obj_align(s_ssid_label, LV_ALIGN_TOP_MID, 0, 68);
 
     s_ip_label = lv_label_create(parent);
+    lv_obj_set_width(s_ip_label, UI_NET_LABEL_WIDTH);
+    lv_label_set_long_mode(s_ip_label, LV_LABEL_LONG_DOT);
     lv_label_set_text_static(s_ip_label, "IP: -");
-    lv_obj_align(s_ip_label, LV_ALIGN_TOP_LEFT, 10, 96);
+    lv_obj_align(s_ip_label, LV_ALIGN_TOP_MID, 0, 96);
 
     s_rssi_label = lv_label_create(parent);
+    lv_obj_set_width(s_rssi_label, UI_NET_LABEL_WIDTH);
+    lv_label_set_long_mode(s_rssi_label, LV_LABEL_LONG_DOT);
     lv_label_set_text_static(s_rssi_label, "RSSI: -");
-    lv_obj_align(s_rssi_label, LV_ALIGN_TOP_LEFT, 10, 124);
+    lv_obj_align(s_rssi_label, LV_ALIGN_TOP_MID, 0, 124);
 
     s_error_label = lv_label_create(parent);
     lv_obj_set_width(s_error_label, UI_NET_LABEL_WIDTH);
     lv_label_set_long_mode(s_error_label, LV_LABEL_LONG_DOT);
     lv_label_set_text_static(s_error_label, "Last error: -");
-    lv_obj_align(s_error_label, LV_ALIGN_TOP_LEFT, 10, 152);
+    lv_obj_align(s_error_label, LV_ALIGN_TOP_MID, 0, 152);
 
     lv_obj_t *clear_btn = lv_button_create(parent);
     lv_obj_set_size(clear_btn, UI_NET_BTN_WIDTH, UI_NET_BTN_HEIGHT);
@@ -82,7 +86,7 @@ void ui_page_network_init(lv_obj_t *parent)
     lv_obj_add_event_cb(clear_btn, reprovision_btn_cb, LV_EVENT_CLICKED, NULL);
 
     lv_obj_t *clear_label = lv_label_create(clear_btn);
-    lv_label_set_text_static(clear_label, "Clear WiFi");
+    lv_label_set_text_static(clear_label, "Reset WiFi");
     lv_obj_center(clear_label);
 
     lv_timer_create(network_timer_cb, UI_TIMER_NET_MS, NULL);

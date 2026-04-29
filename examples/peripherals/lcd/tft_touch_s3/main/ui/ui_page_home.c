@@ -24,7 +24,8 @@ static void stats_timer_cb(lv_timer_t *t)
 {
     (void)t;
     uint32_t seconds = (uint32_t)(esp_timer_get_time() / 1000000ULL);
-    lv_label_set_text_fmt(s_uptime_label, LV_SYMBOL_REFRESH " %"PRIu32" s", seconds);
+    lv_label_set_text_fmt(s_uptime_label, LV_SYMBOL_REFRESH " %02"PRIu32":%02"PRIu32":%02"PRIu32,
+                          seconds / 3600, (seconds % 3600) / 60, seconds % 60);
 
     lv_chart_set_next_value(s_heap_chart, s_heap_ser,
                             (int32_t)(sys_stats_heap_free() / 1024));
@@ -73,7 +74,7 @@ void ui_page_home_init(lv_obj_t *parent)
 
     /* Uptime label at bottom */
     s_uptime_label = lv_label_create(parent);
-    lv_label_set_text_static(s_uptime_label, LV_SYMBOL_REFRESH " 0 s");
+    lv_label_set_text_static(s_uptime_label, LV_SYMBOL_REFRESH " 00:00:00");
     lv_obj_align(s_uptime_label, LV_ALIGN_BOTTOM_MID, 0, -6);
 
     lv_timer_create(stats_timer_cb, UI_TIMER_HOME_MS, NULL);
