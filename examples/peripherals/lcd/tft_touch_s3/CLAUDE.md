@@ -93,7 +93,7 @@ _lock_release(&lvgl_api_lock);
 
 ## AI Integration Point
 
-The AI tab is currently a Phase 1 voice-assistant avatar prototype. It simulates listening, thinking, speaking, and error states locally; it does not yet use audio hardware, a backend proxy, or shared assistant state.
+The AI tab is currently a Phase 1 voice-assistant avatar prototype. It simulates listening, uploading, thinking, speaking, and error states locally via a demo state machine; it does not yet use audio hardware, a backend proxy, or shared assistant state.
 
 `ui_ai_update_result(const char *label, float confidence)` remains as a compatibility hook. The label updates the avatar caption/speaking state, while confidence is ignored. Call it under `lvgl_api_lock` when invoked from outside LVGL task context.
 

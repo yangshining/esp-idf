@@ -10,7 +10,7 @@ The default configuration has been verified on an ESP32-S3 N16R8 development boa
 The demo renders a four-page LVGL v9 UI:
 
 - **Home:** real-time heap free (KB) and CPU load (%) rolling charts, plus uptime counter
-- **AI:** Phase 1 voice-assistant avatar prototype with local simulated listening, thinking, speaking, and error states; later phases connect audio hardware and a backend proxy
+- **AI:** Phase 1 voice-assistant avatar prototype with local simulated listening, uploading, thinking, speaking, and error states; later phases connect audio hardware and a backend proxy
 - **Network:** BLE WiFi provisioning and WiFi STA status, including SSID, IP address, RSSI, and last error
 - **Settings:** screen rotation (4 orientations) and backlight brightness slider (PWM, 0–100%), both persisted to NVS and restored on reboot
 
@@ -208,7 +208,7 @@ The provisioning and WiFi event handlers only update `app_net_state`. LVGL label
 
 ## Integrating AI Results
 
-The AI page is currently a Phase 1 mock voice-assistant UI. Its controls simulate local listening, thinking, speaking, and error states only; there is no audio hardware path, backend proxy, or assistant-state module yet.
+The AI page is currently a Phase 1 mock voice-assistant UI. Its controls simulate local listening, uploading, thinking, speaking, and error states only; there is no audio hardware path, backend proxy, or assistant-state module yet.
 
 `ui_ai_update_result(const char *label, float confidence)` remains as a compatibility hook. The label updates the avatar caption and speaking state, while confidence is ignored. If it is invoked from outside the LVGL task context, call it while holding `lvgl_api_lock`:
 

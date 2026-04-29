@@ -23,10 +23,10 @@ Keep changes focused on this example unless the user explicitly asks for framewo
 - `main/connectivity/app_net_state.c` and `.h` - shared provisioning/WiFi state model guarded by a FreeRTOS mutex
 - `main/connectivity/app_wifi.c` and `.h` - WiFi STA, `esp_netif`, WiFi/IP event handling, credential clearing
 - `main/connectivity/app_prov.c` and `.h` - BLE provisioning manager integration
-- `main/ui/ui_config.h` - central UI constants (timer periods, animation parameters, widget dimensions); add new UI constants here instead of inline magic numbers
+- `main/ui/ui_config.h` - central UI constants (timer periods per avatar state, animation parameters, widget dimensions); add new UI constants here instead of inline magic numbers
 - `main/ui/ui_main.c` - LVGL tabview creation and page wiring
 - `main/ui/ui_page_home.c` - heap/CPU charts and uptime
-- `main/ui/ui_page_ai.c` - Phase 1 voice-assistant avatar prototype with local mock listening/thinking/speaking/error states
+- `main/ui/ui_page_ai.c` - Phase 1 voice-assistant avatar prototype; table-driven demo state machine with Idle/Listening/Uploading/Thinking/Speaking/Error states, per-state timing and color/frame tables
 - `main/ui/ui_page_network.c` - BLE provisioning and WiFi STA status page
 - `main/ui/ui_page_settings.c` - rotation and backlight controls
 - `main/Kconfig.projbuild` - GPIO, touch, provisioning, and WiFi retry configuration
