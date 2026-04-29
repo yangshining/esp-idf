@@ -65,7 +65,7 @@ Add a static color-pair table for background and border. Each entry maps to an `
 ```c
 typedef struct {
     lv_palette_t palette;
-    int          lighten;
+    uint8_t      lighten;
 } state_color_t;
 
 static const state_color_t s_state_colors[AI_DEMO_STATE_COUNT] = {
@@ -117,6 +117,8 @@ Replace uniform `UI_AI_DEMO_STEP_MS` with individual constants in `ui_config.h`:
 ```
 
 `demo_timer_cb` calls `lv_timer_set_period(t, UI_AI_DEMO_STEP_xxx_MS)` before each state transition so each state dwells for its own duration. `UI_AI_DEMO_STEP_MS` is removed from `ui_config.h`.
+
+The demo timer is created paused with `UI_AI_DEMO_STEP_LISTEN_MS` as the initial period (the first active state is always `Listening`). The period is updated by `demo_timer_cb` on each subsequent transition.
 
 ## Demo Sequence
 
