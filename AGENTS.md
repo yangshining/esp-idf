@@ -104,7 +104,7 @@ The local customization focus is:
 examples/peripherals/lcd/tft_touch_s3
 ```
 
-This ESP32-S3 demo drives an ST7789 SPI TFT display and an XPT2046 resistive touch controller, with an LVGL 9.3 UI. It also includes a minimal BLE WiFi provisioning flow and WiFi STA status page.
+This ESP32-S3 demo drives an ST7789 SPI TFT display and an XPT2046 resistive touch controller, with an LVGL 9.3 two-tab AI assistant UI. It also includes a minimal BLE WiFi provisioning flow and WiFi STA status display in the setup tab.
 
 Key files:
 
@@ -113,11 +113,11 @@ Key files:
 - `main/connectivity/app_net_state.c` and `main/connectivity/app_net_state.h` - shared provisioning/WiFi state model guarded by a FreeRTOS mutex
 - `main/connectivity/app_wifi.c` and `main/connectivity/app_wifi.h` - WiFi STA, `esp_netif`, WiFi/IP event handling, credential clearing
 - `main/connectivity/app_prov.c` and `main/connectivity/app_prov.h` - BLE provisioning manager integration using `network_provisioning`
-- `main/ui/ui_main.c` - tabview creation and page wiring
-- `main/ui/ui_page_home.c` - home page
-- `main/ui/ui_page_ai.c` - AI result label and confidence bar
-- `main/ui/ui_page_network.c` - BLE provisioning and WiFi STA status page
-- `main/ui/ui_page_settings.c` - rotation and backlight controls
+- `main/ui/ui_main.c` - two-tab LVGL tabview creation and page wiring
+- `main/ui/ui_page_ai.c` - Phase 1 AI assistant avatar, face/status animation, and mock voice states
+- `main/ui/ui_page_settings.c` - rotation, backlight, WiFi status, and WiFi credential clearing controls
+- `main/ui/ui_page_home.c` - legacy heap/CPU chart page, currently not mounted in the main tabview
+- `main/ui/ui_page_network.c` - legacy standalone network page, currently not mounted in the main tabview
 - `main/Kconfig.projbuild` - GPIO/example configuration
 - `partitions.csv` - custom partition table with a 3 MB factory app partition for LVGL + BLE/WiFi
 - `main/idf_component.yml` - managed dependencies:
