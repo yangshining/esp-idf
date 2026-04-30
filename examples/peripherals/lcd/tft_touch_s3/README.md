@@ -7,12 +7,10 @@ This example drives a 2.4-inch SPI TFT module marked `TFT SPI 240*320`, with an 
 
 The default configuration has been verified on an ESP32-S3 N16R8 development board with a 2.4-inch 240x320 SPI TFT module. The verified setup uses active-high backlight control, XPT2046 polling mode, mirrored X touch coordinates, and non-mirrored Y touch coordinates.
 
-The demo renders a four-page LVGL v9 UI:
+The demo renders a compact two-tab LVGL v9 UI for the small 240x320 touch screen:
 
-- **Home:** real-time heap free (KB) and CPU load (%) rolling charts, plus uptime counter
-- **AI:** Phase 1 voice-assistant avatar prototype with local simulated listening, uploading, thinking, speaking, and error states; later phases connect audio hardware and a backend proxy
-- **Network:** BLE WiFi provisioning and WiFi STA status, including SSID, IP address, RSSI, and last error
-- **Settings:** screen rotation (4 orientations) and backlight brightness slider (PWM, 10–100%), both persisted to NVS and restored on reboot
+- **AI:** Phase 1 voice-assistant avatar prototype with local simulated listening, uploading, thinking, speaking, and error states; later phases connect audio hardware and a backend proxy.
+- **Setup:** screen rotation, backlight brightness slider, WiFi STA status, and **Clear WiFi** credential reset. Rotation and brightness are persisted to NVS and restored on reboot.
 
 ## Hardware
 
@@ -39,7 +37,7 @@ The `SD_*` pins are for the TF card slot. This example does not use the TF card,
 - XPT2046 touch input is tuned for responsiveness with one sample per read and a pressure threshold of `50`.
 - Touch calibration defaults are `swap_xy = n`, `mirror_x = y`, and `mirror_y = n`.
 - Brightness and rotation settings are saved to NVS partition `"tft_settings"` and restored on every boot.
-- The Network page uses BLE provisioning for first-time WiFi setup, then shows WiFi STA connection state from a small shared state model.
+- The Setup page uses BLE provisioning for first-time WiFi setup, then shows WiFi STA connection state from a small shared state model.
 
 ## Software Structure
 
@@ -50,9 +48,10 @@ The demo keeps display, UI, and connectivity separated:
 - `main/connectivity/app_net_state.c` stores the current provisioning/WiFi state behind a FreeRTOS mutex.
 - `main/connectivity/app_wifi.c` initializes `esp_netif`/WiFi STA and translates WiFi/IP events into `app_net_state` updates.
 - `main/connectivity/app_prov.c` starts BLE provisioning through the `network_provisioning` managed component and handles provisioning events.
-- `main/ui/ui_main.c` creates the LVGL tabview and wires Home, AI, Network, and Settings pages.
+- `main/ui/ui_main.c` creates the LVGL tabview and wires the AI and Setup pages.
 - `main/ui/ui_page_ai.c` renders the Phase 1 voice-assistant avatar prototype and local mock state transitions.
-- `main/ui/ui_page_network.c` refreshes labels from `app_net_state`; WiFi/BLE event handlers do not call LVGL directly.
+- `main/ui/ui_page_settings.c` renders rotation/backlight controls and refreshes WiFi labels from `app_net_state`; WiFi/BLE event handlers do not call LVGL directly.
+- `main/ui/ui_page_home.c` and `main/ui/ui_page_network.c` are legacy standalone pages retained in source but not mounted by the current two-tab UI.
 
 ## Recommended Wiring
 
@@ -192,19 +191,19 @@ CONFIG_BT_NIMBLE_ENABLED=y
 CONFIG_ESP_PROTOCOMM_SUPPORT_SECURITY_VERSION_1=y
 ```
 
-This matches ESP32-S3 N16R8 boards with 8 MB PSRAM. If your board has no compatible PSRAM, remove or override the `CONFIG_SPIRAM*` lines. The `FREERTOS_*` lines are required for the Home page CPU load chart and are safe to keep regardless of PSRAM. The Bluetooth lines enable the BLE transport used by WiFi provisioning.
+This matches ESP32-S3 N16R8 boards with 8 MB PSRAM. If your board has no compatible PSRAM, remove or override the `CONFIG_SPIRAM*` lines. The `FREERTOS_*` lines support the optional legacy stats page and are safe to keep regardless of PSRAM. The Bluetooth lines enable the BLE transport used by WiFi provisioning.
 
 ## BLE WiFi Provisioning
 
-On first boot, or after clearing WiFi credentials from the Network page, the device starts BLE provisioning using the `network_provisioning` managed component. Use Espressif's provisioning app or tooling with:
+On first boot, or after clearing WiFi credentials from the Setup page, the device starts BLE provisioning using the `network_provisioning` managed component. Use Espressif's provisioning app or tooling with:
 
 - Transport: BLE
 - Service name: `edge-ai-lab-XXXXXX`, where `XXXXXX` is derived from the STA MAC address
 - Proof-of-possession: `abcd1234` by default
 
-After provisioning succeeds, the device connects as a WiFi station and the Network page shows the connected SSID, IPv4 address, and RSSI. The **Reset WiFi** button erases stored WiFi credentials and restarts the board so it enters provisioning again.
+After provisioning succeeds, the device connects as a WiFi station and the Setup page shows the connected SSID and IPv4 address. The **Clear WiFi** button erases stored WiFi credentials and restarts the board so it enters provisioning again.
 
-The provisioning and WiFi event handlers only update `app_net_state`. LVGL labels are updated by an LVGL timer in the Network page, keeping UI work on the LVGL task side.
+The provisioning and WiFi event handlers only update `app_net_state`. LVGL labels are updated by an LVGL timer in the Setup page, keeping UI work on the LVGL task side.
 
 ## Integrating AI Results
 
@@ -233,5 +232,5 @@ Future audio/backend work should add an `assistant_state` module for cross-task 
 - Touch is sluggish: keep `EXAMPLE_TOUCH_LOG` disabled, keep `ESP_LCD_TOUCH_MAX_POINTS=1`, and lower `XPT2046_Z_THRESHOLD` carefully if light touches are missed.
 - Build fails because PSRAM is not found: adjust `sdkconfig.defaults.esp32s3` for your board.
 - Build fails with `components/esp_wifi/lib/esp32s3/libcore.a` missing: initialize the `components/esp_wifi/lib` submodule.
-- The Network page still waits for provisioning after entering credentials: verify the POP (`abcd1234` by default), confirm the AP is 2.4 GHz, and check serial logs for `NETWORK_PROV_WIFI_CRED_FAIL`.
+- The Setup page still waits for provisioning after entering credentials: verify the POP (`abcd1234` by default), confirm the AP is 2.4 GHz, and check serial logs for `NETWORK_PROV_WIFI_CRED_FAIL`.
 - Do not connect the TF card `SD_*` pins unless SD card support is added to the example.

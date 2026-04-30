@@ -33,7 +33,7 @@ static void network_timer_cb(lv_timer_t *t)
     if (state.last_error != ESP_OK) {
         lv_label_set_text_fmt(s_error_label, "Last error: %s", esp_err_to_name(state.last_error));
     } else {
-        lv_label_set_text_static(s_error_label, "Last error: -");
+        lv_label_set_text(s_error_label, "Last error: -");
     }
 }
 
@@ -59,8 +59,8 @@ void ui_page_network_init(lv_obj_t *parent)
     s_ssid_label = lv_label_create(parent);
     lv_obj_set_width(s_ssid_label, UI_NET_LABEL_WIDTH);
     lv_label_set_long_mode(s_ssid_label, LV_LABEL_LONG_DOT);
-    lv_label_set_text_static(s_ssid_label, "SSID: -");
-    lv_obj_align(s_ssid_label, LV_ALIGN_TOP_MID, 0, 68);
+    lv_label_set_text(s_ssid_label, "SSID: -");
+    lv_obj_align(s_ssid_label, LV_ALIGN_TOP_LEFT, 10, 68);
 
     s_ip_label = lv_label_create(parent);
     lv_obj_set_width(s_ip_label, UI_NET_LABEL_WIDTH);
@@ -77,8 +77,8 @@ void ui_page_network_init(lv_obj_t *parent)
     s_error_label = lv_label_create(parent);
     lv_obj_set_width(s_error_label, UI_NET_LABEL_WIDTH);
     lv_label_set_long_mode(s_error_label, LV_LABEL_LONG_DOT);
-    lv_label_set_text_static(s_error_label, "Last error: -");
-    lv_obj_align(s_error_label, LV_ALIGN_TOP_MID, 0, 152);
+    lv_label_set_text(s_error_label, "Last error: -");
+    lv_obj_align(s_error_label, LV_ALIGN_TOP_LEFT, 10, 152);
 
     lv_obj_t *clear_btn = lv_button_create(parent);
     lv_obj_set_size(clear_btn, UI_NET_BTN_WIDTH, UI_NET_BTN_HEIGHT);
