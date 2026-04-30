@@ -27,7 +27,7 @@ static void network_timer_cb(lv_timer_t *t)
     if (state.status == APP_NET_STATUS_WIFI_CONNECTED) {
         lv_label_set_text_fmt(s_rssi_label, "RSSI: %d dBm", state.rssi);
     } else {
-        lv_label_set_text_static(s_rssi_label, "RSSI: -");
+        lv_label_set_text(s_rssi_label, "RSSI: -");
     }
 
     if (state.last_error != ESP_OK) {
@@ -53,7 +53,7 @@ void ui_page_network_init(lv_obj_t *parent)
     s_status_label = lv_label_create(parent);
     lv_obj_set_width(s_status_label, UI_NET_LABEL_WIDTH);
     lv_label_set_long_mode(s_status_label, LV_LABEL_LONG_DOT);
-    lv_label_set_text_static(s_status_label, "Status: -");
+    lv_label_set_text(s_status_label, "Status: -");
     lv_obj_align(s_status_label, LV_ALIGN_TOP_MID, 0, 36);
 
     s_ssid_label = lv_label_create(parent);
@@ -65,13 +65,13 @@ void ui_page_network_init(lv_obj_t *parent)
     s_ip_label = lv_label_create(parent);
     lv_obj_set_width(s_ip_label, UI_NET_LABEL_WIDTH);
     lv_label_set_long_mode(s_ip_label, LV_LABEL_LONG_DOT);
-    lv_label_set_text_static(s_ip_label, "IP: -");
+    lv_label_set_text(s_ip_label, "IP: -");
     lv_obj_align(s_ip_label, LV_ALIGN_TOP_MID, 0, 96);
 
     s_rssi_label = lv_label_create(parent);
     lv_obj_set_width(s_rssi_label, UI_NET_LABEL_WIDTH);
     lv_label_set_long_mode(s_rssi_label, LV_LABEL_LONG_DOT);
-    lv_label_set_text_static(s_rssi_label, "RSSI: -");
+    lv_label_set_text(s_rssi_label, "RSSI: -");
     lv_obj_align(s_rssi_label, LV_ALIGN_TOP_MID, 0, 124);
 
     s_error_label = lv_label_create(parent);

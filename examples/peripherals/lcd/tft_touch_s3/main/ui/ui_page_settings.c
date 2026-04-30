@@ -55,28 +55,23 @@ static void clear_wifi_btn_cb(lv_event_t *e)
 
 void ui_page_settings_init(lv_obj_t *parent, lv_display_t *disp)
 {
-    lv_obj_t *title = lv_label_create(parent);
-    lv_label_set_text_static(title, LV_SYMBOL_SETTINGS " Settings");
-    lv_obj_set_style_text_align(title, LV_TEXT_ALIGN_CENTER, 0);
-    lv_obj_align(title, LV_ALIGN_TOP_MID, 0, 6);
-
     /* Rotate button */
     lv_obj_t *rot_btn = lv_button_create(parent);
-    lv_obj_set_size(rot_btn, UI_NET_BTN_WIDTH, 32);
+    lv_obj_set_size(rot_btn, UI_NET_BTN_WIDTH, UI_NET_BTN_HEIGHT);
     lv_obj_t *rot_lbl = lv_label_create(rot_btn);
     lv_label_set_text_static(rot_lbl, LV_SYMBOL_REFRESH " Rotate");
     lv_obj_center(rot_lbl);
-    lv_obj_align(rot_btn, LV_ALIGN_TOP_MID, 0, 8);
+    lv_obj_align(rot_btn, LV_ALIGN_TOP_MID, 0, 12);
     lv_obj_add_event_cb(rot_btn, rotate_btn_cb, LV_EVENT_CLICKED, disp);
 
     /* Backlight label + slider */
     lv_obj_t *bk_label = lv_label_create(parent);
     lv_label_set_text_static(bk_label, "Backlight");
-    lv_obj_align(bk_label, LV_ALIGN_TOP_MID, 0, 48);
+    lv_obj_align(bk_label, LV_ALIGN_TOP_MID, 0, 56);
 
     lv_obj_t *slider = lv_slider_create(parent);
     lv_obj_set_width(slider, UI_SLIDER_WIDTH);
-    lv_obj_align(slider, LV_ALIGN_TOP_MID, 0, 72);
+    lv_obj_align(slider, LV_ALIGN_TOP_MID, 0, 82);
     lv_slider_set_range(slider, UI_BACKLIGHT_MIN, 100);
     lv_obj_add_event_cb(slider, backlight_slider_cb, LV_EVENT_VALUE_CHANGED, NULL);
 
@@ -84,23 +79,23 @@ void ui_page_settings_init(lv_obj_t *parent, lv_display_t *disp)
     lv_obj_set_width(s_net_status_label, UI_NET_LABEL_WIDTH);
     lv_label_set_long_mode(s_net_status_label, LV_LABEL_LONG_DOT);
     lv_label_set_text(s_net_status_label, "WiFi: -");
-    lv_obj_align(s_net_status_label, LV_ALIGN_TOP_LEFT, 10, 102);
+    lv_obj_align(s_net_status_label, LV_ALIGN_TOP_LEFT, 10, 118);
 
     s_net_ssid_label = lv_label_create(parent);
     lv_obj_set_width(s_net_ssid_label, UI_NET_LABEL_WIDTH);
     lv_label_set_long_mode(s_net_ssid_label, LV_LABEL_LONG_DOT);
     lv_label_set_text(s_net_ssid_label, "SSID: -");
-    lv_obj_align(s_net_ssid_label, LV_ALIGN_TOP_LEFT, 10, 126);
+    lv_obj_align(s_net_ssid_label, LV_ALIGN_TOP_LEFT, 10, 144);
 
     s_net_ip_label = lv_label_create(parent);
     lv_obj_set_width(s_net_ip_label, UI_NET_LABEL_WIDTH);
     lv_label_set_long_mode(s_net_ip_label, LV_LABEL_LONG_DOT);
     lv_label_set_text(s_net_ip_label, "IP: -");
-    lv_obj_align(s_net_ip_label, LV_ALIGN_TOP_LEFT, 10, 150);
+    lv_obj_align(s_net_ip_label, LV_ALIGN_TOP_LEFT, 10, 170);
 
     lv_obj_t *clear_btn = lv_button_create(parent);
-    lv_obj_set_size(clear_btn, UI_NET_BTN_WIDTH, 32);
-    lv_obj_align(clear_btn, LV_ALIGN_TOP_MID, 0, 176);
+    lv_obj_set_size(clear_btn, UI_NET_BTN_WIDTH, UI_NET_BTN_HEIGHT);
+    lv_obj_align(clear_btn, LV_ALIGN_BOTTOM_MID, 0, -14);
     lv_obj_add_event_cb(clear_btn, clear_wifi_btn_cb, LV_EVENT_CLICKED, NULL);
 
     lv_obj_t *clear_label = lv_label_create(clear_btn);
